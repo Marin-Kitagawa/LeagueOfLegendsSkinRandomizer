@@ -1,3 +1,154 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "lux-elementalist",
+      "description": "Elementalist Lux Splash Art",
+      "imageUrl": "https://picsum.photos/seed/101/400/240",
+      "imageHint": "magic fantasy"
+    },
+    {
+      "id": "lux-cosmic",
+      "description": "Cosmic Lux Splash Art",
+      "imageUrl": "https://picsum.photos/seed/102/400/240",
+      "imageHint": "space stars"
+    },
+    {
+      "id": "lux-dark-cosmic",
+      "description": "Dark Cosmic Lux Splash Art",
+      "imageUrl": "https://picsum.photos/seed/103/400/240",
+      "imageHint": "dark space"
+    },
+    {
+      "id": "lux-porcelain",
+      "description": "Porcelain Lux Splash Art",
+      "imageUrl": "https://picsum.photos/seed/104/400/240",
+      "imageHint": "porcelain pattern"
+    },
+    {
+      "id": "lux-battle-academia",
+      "description": "Battle Academia Lux Splash Art",
+      "imageUrl": "https://picsum.photos/seed/105/400/240",
+      "imageHint": "anime school"
+    },
+    {
+      "id": "lux-pajama-guardian",
+      "description": "Pajama Guardian Lux Splash Art",
+      "imageUrl": "https://picsum.photos/seed/106/400/240",
+      "imageHint": "cute pajamas"
+    },
+    {
+      "id": "lux-star-guardian",
+      "description": "Star Guardian Lux Splash Art",
+      "imageUrl": "https://picsum.photos/seed/107/400/240",
+      "imageHint": "magical girl"
+    },
+    {
+      "id": "lux-steel-legion",
+      "description": "Steel Legion Lux Splash Art",
+      "imageUrl": "https://picsum.photos/seed/108/400/240",
+      "imageHint": "armor soldier"
+    },
+    {
+      "id": "ahri-kda-all-out",
+      "description": "K/DA ALL OUT Ahri Splash Art",
+      "imageUrl": "https://picsum.photos/seed/201/400/240",
+      "imageHint": "popstar crystal"
+    },
+    {
+      "id": "ahri-spirit-blossom",
+      "description": "Spirit Blossom Ahri Splash Art",
+      "imageUrl": "https://picsum.photos/seed/202/400/240",
+      "imageHint": "spirit blossom"
+    },
+    {
+      "id": "ahri-star-guardian",
+      "description": "Star Guardian Ahri Splash Art",
+      "imageUrl": "https://picsum.photos/seed/203/400/240",
+      "imageHint": "magical girl"
+    },
+    {
+      "id": "ahri-arcade",
+      "description": "Arcade Ahri Splash Art",
+      "imageUrl": "https://picsum.photos/seed/204/400/240",
+      "imageHint": "arcade pixel"
+    },
+    {
+      "id": "ahri-elderwood",
+      "description": "Elderwood Ahri Splash Art",
+      "imageUrl": "https://picsum.photos/seed/205/400/240",
+      "imageHint": "enchanted forest"
+    },
+    {
+      "id": "ahri-coven",
+      "description": "Coven Ahri Splash Art",
+      "imageUrl": "https://picsum.photos/seed/206/400/240",
+      "imageHint": "witch forest"
+    },
+    {
+      "id": "garen-god-king",
+      "description": "God-King Garen Splash Art",
+      "imageUrl": "https://picsum.photos/seed/301/400/240",
+      "imageHint": "king armor"
+    },
+    {
+      "id": "garen-demacia-vice",
+      "description": "Demacia Vice Garen Splash Art",
+      "imageUrl": "https://picsum.photos/seed/302/400/240",
+      "imageHint": "retro neon"
+    },
+    {
+      "id": "garen-mecha-kingdoms",
+      "description": "Mecha Kingdoms Garen Splash Art",
+      "imageUrl": "https://picsum.photos/seed/303/400/240",
+      "imageHint": "robot warrior"
+    },
+    {
+      "id": "garen-warring-kingdoms",
+      "description": "Warring Kingdoms Garen Splash Art",
+      "imageUrl": "https://picsum.photos/seed/304/400/240",
+      "imageHint": "warrior jade"
+    },
+    {
+      "id": "garen-steel-legion",
+      "description": "Steel Legion Garen Splash Art",
+      "imageUrl": "https://picsum.photos/seed/305/400/240",
+      "imageHint": "armor soldier"
+    },
+    {
+      "id": "yasuo-truth-dragon",
+      "description": "Truth Dragon Yasuo Splash Art",
+      "imageUrl": "https://picsum.photos/seed/401/400/240",
+      "imageHint": "dragon warrior"
+    },
+    {
+      "id": "yasuo-dream-dragon",
+      "description": "Dream Dragon Yasuo Splash Art",
+      "imageUrl": "https://picsum.photos/seed/402/400/240",
+      "imageHint": "dragon magic"
+    },
+    {
+      "id": "yasuo-nightbringer",
+      "description": "Nightbringer Yasuo Splash Art",
+      "imageUrl": "https://picsum.photos/seed/403/400/240",
+      "imageHint": "dark demon"
+    },
+    {
+      "id": "yasuo-odyssey",
+      "description": "Odyssey Yasuo Splash Art",
+      "imageUrl": "https://picsum.photos/seed/404/400/240",
+      "imageHint": "space captain"
+    },
+    {
+      "id": "yasuo-high-noon",
+      "description": "High Noon Yasuo Splash Art",
+      "imageUrl": "https://picsum.photos/seed/405/400/240",
+      "imageHint": "cowboy demon"
+    },
+    {
+      "id": "yasuo-project",
+      "description": "PROJECT: Yasuo Splash Art",
+      "imageUrl": "https://picsum.photos/seed/406/400/240",
+      "imageHint": "cyborg ninja"
+    }
+  ]
 }

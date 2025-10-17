@@ -34,8 +34,8 @@ type ChampionFullData = {
     };
 }
 
-export function getSkinImageUrl(championId: string, skinNum: number) {
-  return `${DDRAGON_URL}/img/champion/splash/${championId}_${skinNum}.jpg`;
+export function getSkinImageUrl(championId: string, skinNum: number, type: 'splash' | 'loading' = 'splash') {
+  return `${DDRAGON_URL}/cdn/img/champion/${type}/${championId}_${skinNum}.jpg`;
 }
 
 export const getChampions = async (): Promise<Champion[]> => {

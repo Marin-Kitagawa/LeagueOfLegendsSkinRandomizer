@@ -92,7 +92,7 @@ export function SkinPicker() {
 
       const skinsWithImages = skinsToSuggest.map(skin => ({
         ...skin,
-        imageUrl: getSkinImageUrl(selectedChampion.id, skin.num),
+        imageUrl: getSkinImageUrl(selectedChampion.id, skin.num, 'loading'),
       }));
 
       setSuggestedSkins(skinsWithImages);
@@ -185,7 +185,7 @@ export function SkinPicker() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 animate-fade-in">
           {suggestedSkins.map((skin) => (
             <Card key={skin.id} className="overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-primary/30">
-              <div className="relative aspect-video w-full">
+              <div className="relative aspect-[7/12] w-full">
                 <Image
                   src={skin.imageUrl}
                   alt={skin.name}

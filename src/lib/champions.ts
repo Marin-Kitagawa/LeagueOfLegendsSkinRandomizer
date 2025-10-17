@@ -1,4 +1,6 @@
 
+import { getSkinTier, type SkinTier } from '@/lib/skintiers';
+
 const DDRAGON_URL = 'https://ddragon.leagueoflegends.com';
 const CDRAGON_URL = 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default';
 
@@ -15,6 +17,7 @@ export type Skin = {
   name: string;
   num: number;
   chromas: boolean;
+  tier: SkinTier | null;
 };
 
 export type Champion = {
@@ -59,6 +62,40 @@ type CommunityDragonChampion = {
   }[];
 }
 
+type CdragonSkinData = {
+    id: number;
+    name: string;
+    description: string | null;
+    splashPath: string;
+    uncenteredSplashPath: string;
+    tilePath: string;
+    loadScreenPath: string;
+    skinType: string;
+    rarity: string;
+    isLegacy: boolean;
+    chromaPath: string | null;
+    chromas: {
+        id: number;
+        name: string;
+        chromaPath: string;
+        colors: string[];
+    }[] | null;
+    featuresText: string | null;
+};
+
+const getSkinTiers = async (): Promise<Record<string, CdragonSkinData>> => {
+    try {
+        const response = await fetch(`${CDRAGON_URL}/v1/skins.json`, { next: { revalidate: 3600 } });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch skin tiers: ${response.statusText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching skin tiers from Community Dragon:", error);
+        throw new Error('Could not retrieve skin tier data.');
+    }
+};
+
 export const getLatestVersion = async (): Promise<string> => {
     try {
         const versionsResponse = await fetch(`${DDRAGON_URL}/api/versions.json`, { next: { revalidate: 3600 } });
@@ -79,7 +116,10 @@ export function getSkinImageUrl(championId: string, skinNum: number, type: 'spla
 
 export const getChampions = async (): Promise<Champion[]> => {
     try {
-      const latestVersion = await getLatestVersion();
+      const [latestVersion, skinTiers] = await Promise.all([
+          getLatestVersion(),
+          getSkinTiers()
+      ]);
 
       const response = await fetch(`${DDRAGON_URL}/cdn/${latestVersion}/data/en_US/championFull.json`, { next: { revalidate: 3600 } });
       if (!response.ok) {
@@ -93,10 +133,15 @@ export const getChampions = async (): Promise<Champion[]> => {
         key: champ.key,
         name: champ.name,
         title: champ.title,
-        skins: champ.skins.map(skin => ({
-          ...skin,
-          name: skin.name === 'default' ? champ.name : skin.name
-        }))
+        skins: champ.skins.map(skin => {
+            const tierData = skinTiers[skin.id];
+            const tier = tierData ? getSkinTier(tierData.rarity, tierData.isLegacy) : null;
+            return {
+                ...skin,
+                name: skin.name === 'default' ? champ.name : skin.name,
+                tier: tier
+            };
+        })
       })).sort((a, b) => a.name.localeCompare(b.name));
 
       return champions;

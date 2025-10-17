@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
@@ -345,6 +346,20 @@ export function SkinPicker() {
             <Card key={skin.id} className="overflow-hidden border-primary/20 bg-background/80 backdrop-blur-sm shadow-lg flex flex-col">
               <div className="relative aspect-[9/16] w-full">
                 <Image src={skin.imageUrl} alt={skin.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+                {skin.tier && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="absolute top-2 left-2 w-10 h-10 z-10">
+                          <Image src={skin.tier.iconUrl} alt={skin.tier.name} fill unoptimized className="object-contain" />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{skin.tier.name}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
               </div>
               <CardHeader className="flex-grow">
                 <CardTitle className="text-xl truncate">{skin.name}</CardTitle>

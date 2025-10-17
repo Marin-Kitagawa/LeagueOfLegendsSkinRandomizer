@@ -37,6 +37,13 @@ export function SkinPicker() {
         const champs = await getChampions();
         setChampions(champs);
         setFilteredChampions(champs);
+        
+        // Load last selected champion from localStorage
+        const lastSelectedId = localStorage.getItem('selectedChampionId');
+        if (lastSelectedId && champs.some(c => c.id === lastSelectedId)) {
+          handleChampionChange(lastSelectedId, false);
+        }
+
       } catch (e: any) {
         toast({
           title: 'Error fetching champions',
@@ -62,8 +69,11 @@ export function SkinPicker() {
   const selectedChampion = useMemo(() => champions.find(c => c.id === selectedChampionId), [selectedChampionId, champions]);
   const maxSkins = selectedChampion ? selectedChampion.skins.length : 1;
 
-  const handleChampionChange = (championId: string) => {
+  const handleChampionChange = (championId: string, saveToStorage = true) => {
     setSelectedChampionId(championId);
+    if (saveToStorage) {
+      localStorage.setItem('selectedChampionId', championId);
+    }
     const champ = champions.find(c => c.id === championId);
     if (champ) {
         const newSkinCount = Math.min(skinCount[0], champ.skins.length);
@@ -128,7 +138,7 @@ export function SkinPicker() {
               <Skeleton className="h-10 w-full" />
             ) : (
             <div className="flex items-center gap-2">
-              <Select onValueChange={handleChampionChange} value={selectedChampionId}>
+              <Select onValueChange={(value) => handleChampionChange(value)} value={selectedChampionId}>
                 <SelectTrigger id="champion-select" className="w-full text-base">
                   <SelectValue placeholder="Select a champion..." />
                 </SelectTrigger>
@@ -246,5 +256,3 @@ export function SkinPicker() {
     </div>
   );
 }
-
-    

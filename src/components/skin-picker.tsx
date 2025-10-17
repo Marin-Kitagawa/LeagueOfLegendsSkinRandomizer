@@ -7,6 +7,7 @@ import { getChampions, getSkinImageUrl, type Champion, type Skin } from '@/lib/c
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -15,7 +16,7 @@ import { Slider } from '@/components/ui/slider';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from './ui/skeleton';
 
-type SuggestedSkin = Skin & { imageUrl: string };
+type SuggestedSkin = Skin & { imageUrl: string; fullImageUrl: string };
 
 export function SkinPicker() {
   const { toast } = useToast();
@@ -92,7 +93,8 @@ export function SkinPicker() {
 
       const skinsWithImages = skinsToSuggest.map(skin => ({
         ...skin,
-        imageUrl: getSkinImageUrl(selectedChampion.id, skin.num, 'splash'),
+        imageUrl: getSkinImageUrl(selectedChampion.id, skin.num, 'loading'),
+        fullImageUrl: getSkinImageUrl(selectedChampion.id, skin.num, 'splash'),
       }));
 
       setSuggestedSkins(skinsWithImages);
@@ -184,20 +186,34 @@ export function SkinPicker() {
       {suggestedSkins.length > 0 && (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 animate-fade-in">
           {suggestedSkins.map((skin) => (
-            <Card key={skin.id} className="overflow-hidden border-primary/20 bg-background/80 backdrop-blur-sm shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-primary/20">
-              <div className="relative aspect-[9/16] w-full">
-                <Image
-                  src={skin.imageUrl}
-                  alt={skin.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
-              </div>
-              <CardHeader>
-                <CardTitle className="text-xl truncate">{skin.name}</CardTitle>
-              </CardHeader>
-            </Card>
+            <Dialog key={skin.id}>
+              <DialogTrigger asChild>
+                <Card className="overflow-hidden border-primary/20 bg-background/80 backdrop-blur-sm shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-primary/20 cursor-pointer">
+                  <div className="relative aspect-[9/16] w-full">
+                    <Image
+                      src={skin.imageUrl}
+                      alt={skin.name}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  </div>
+                  <CardHeader>
+                    <CardTitle className="text-xl truncate">{skin.name}</CardTitle>
+                  </CardHeader>
+                </Card>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-4xl p-0 border-0">
+                  <div className="relative aspect-video w-full">
+                      <Image
+                        src={skin.fullImageUrl}
+                        alt={skin.name}
+                        fill
+                        className="object-contain rounded-lg"
+                      />
+                  </div>
+              </DialogContent>
+            </Dialog>
           ))}
         </div>
       )}

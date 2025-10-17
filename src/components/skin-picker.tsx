@@ -92,7 +92,7 @@ export function SkinPicker() {
 
       const skinsWithImages = skinsToSuggest.map(skin => ({
         ...skin,
-        imageUrl: getSkinImageUrl(selectedChampion.id, skin.num, 'loading'),
+        imageUrl: getSkinImageUrl(selectedChampion.id, skin.num, 'splash'),
       }));
 
       setSuggestedSkins(skinsWithImages);
@@ -172,7 +172,7 @@ export function SkinPicker() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: skinCount[0] }).map((_, index) => (
             <Card key={index} className="overflow-hidden border-primary/20 bg-background/80">
-                <Skeleton className="aspect-video w-full" />
+                <Skeleton className="aspect-[9/16] w-full" />
                 <CardHeader>
                     <Skeleton className="h-6 w-3/4 rounded-md" />
                 </CardHeader>
@@ -185,7 +185,7 @@ export function SkinPicker() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 animate-fade-in">
           {suggestedSkins.map((skin) => (
             <Card key={skin.id} className="overflow-hidden border-primary/20 bg-background/80 backdrop-blur-sm shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-primary/20">
-              <div className="relative aspect-[16/9] w-full">
+              <div className="relative aspect-[9/16] w-full">
                 <Image
                   src={skin.imageUrl}
                   alt={skin.name}

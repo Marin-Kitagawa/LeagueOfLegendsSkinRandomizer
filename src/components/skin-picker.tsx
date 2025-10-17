@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
-import { Loader2, Search, Sparkles } from 'lucide-react';
+import { Loader2, Search, Sparkles, Dice5 } from 'lucide-react';
 import { getChampions, getSkinImageUrl, type Champion, type Skin } from '@/lib/champions';
 
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Slider } from '@/components/ui/slider';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from './ui/skeleton';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 type SuggestedSkin = Skin & { imageUrl: string; fullImageUrl: string };
 
@@ -72,6 +73,14 @@ export function SkinPicker() {
     }
     setSuggestedSkins([]);
   };
+  
+  const handleRandomChampion = () => {
+    if (champions.length > 0) {
+      const randomIndex = Math.floor(Math.random() * champions.length);
+      const randomChampion = champions[randomIndex];
+      handleChampionChange(randomChampion.id);
+    }
+  };
 
   const handleSuggestSkins = () => {
     if (!selectedChampion) {
@@ -118,31 +127,45 @@ export function SkinPicker() {
             {isFetchingChampions ? (
               <Skeleton className="h-10 w-full" />
             ) : (
-            <Select onValueChange={handleChampionChange} value={selectedChampionId}>
-              <SelectTrigger id="champion-select" className="w-full text-base">
-                <SelectValue placeholder="Select a champion..." />
-              </SelectTrigger>
-              <SelectContent>
-                <div className="p-2">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input 
-                      placeholder="Search champion..."
-                      className="pl-9"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+            <div className="flex items-center gap-2">
+              <Select onValueChange={handleChampionChange} value={selectedChampionId}>
+                <SelectTrigger id="champion-select" className="w-full text-base">
+                  <SelectValue placeholder="Select a champion..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <div className="p-2">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input 
+                        placeholder="Search champion..."
+                        className="pl-9"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
                   </div>
-                </div>
-                <ScrollArea className="h-[300px]">
-                  {filteredChampions.map((champion) => (
-                    <SelectItem key={champion.id} value={champion.id} className="text-base">
-                      {champion.name}
-                    </SelectItem>
-                  ))}
-                </ScrollArea>
-              </SelectContent>
-            </Select>
+                  <ScrollArea className="h-[300px]">
+                    {filteredChampions.map((champion) => (
+                      <SelectItem key={champion.id} value={champion.id} className="text-base">
+                        {champion.name}
+                      </SelectItem>
+                    ))}
+                  </ScrollArea>
+                </SelectContent>
+              </Select>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="outline" size="icon" onClick={handleRandomChampion} aria-label="Select Random Champion">
+                      <Dice5 className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Random Champion</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             )}
           </div>
           <div className="space-y-4 pt-2">
@@ -223,3 +246,5 @@ export function SkinPicker() {
     </div>
   );
 }
+
+    

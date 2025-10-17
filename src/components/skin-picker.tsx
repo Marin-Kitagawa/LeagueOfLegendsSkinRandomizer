@@ -349,35 +349,29 @@ export function SkinPicker() {
               </div>
               <CardHeader className="flex-grow">
                 <TooltipProvider>
-                  <div className="flex items-center gap-2">
-                    {skin.tier && skin.tier.iconUrl && (
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <div className="relative w-8 h-8 flex-shrink-0">
-                            <Image src={skin.tier.iconUrl} alt={skin.tier.name} fill unoptimized className="object-contain" />
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{skin.tier.name}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    )}
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <CardTitle className="text-xl truncate">{skin.name}</CardTitle>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{skin.name}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <CardTitle className="text-xl truncate">{skin.name}</CardTitle>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{skin.name}</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </TooltipProvider>
               </CardHeader>
               <CardFooter className="grid grid-cols-1 gap-2">
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="outline">
-                      {skin.tier ? `${skin.tier.name} Splash` : 'Splash Art'}
+                      {skin.tier && skin.tier.iconUrl ? (
+                          <div className="relative w-5 h-5 mr-2 flex-shrink-0">
+                            <Image src={skin.tier.iconUrl} alt={skin.tier.name} fill unoptimized className="object-contain" />
+                          </div>
+                        ) : (
+                          <ImageIcon className="mr-2 h-4 w-4" />
+                        )
+                      }
+                      Splash Art
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-5xl p-0 border-0">
@@ -414,3 +408,4 @@ export function SkinPicker() {
     </div>
   );
 }
+

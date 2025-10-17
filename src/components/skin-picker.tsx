@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
@@ -347,9 +348,9 @@ export function SkinPicker() {
                 <Image src={skin.imageUrl} alt={skin.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
               </div>
               <CardHeader className="flex-grow">
-                <div className="flex items-center gap-2">
-                  {skin.tier && skin.tier.iconUrl && (
-                    <TooltipProvider>
+                <TooltipProvider>
+                  <div className="flex items-center gap-2">
+                    {skin.tier && skin.tier.iconUrl && (
                       <Tooltip>
                         <TooltipTrigger>
                           <div className="relative w-8 h-8 flex-shrink-0">
@@ -360,15 +361,24 @@ export function SkinPicker() {
                           <p>{skin.tier.name}</p>
                         </TooltipContent>
                       </Tooltip>
-                    </TooltipProvider>
-                  )}
-                  <CardTitle className="text-xl truncate">{skin.name}</CardTitle>
-                </div>
+                    )}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <CardTitle className="text-xl truncate">{skin.name}</CardTitle>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{skin.name}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                </TooltipProvider>
               </CardHeader>
               <CardFooter className="grid grid-cols-1 gap-2">
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="outline"><ImageIcon className="mr-2 h-4 w-4" /> Splash Art</Button>
+                    <Button variant="outline">
+                      {skin.tier ? `${skin.tier.name} Splash` : 'Splash Art'}
+                    </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-5xl p-0 border-0">
                     <div className="relative aspect-video w-full">

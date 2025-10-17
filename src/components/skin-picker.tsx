@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
@@ -35,13 +33,13 @@ function ChromaDialogContent({ skin, champion, onGenerate, suggestedChromas, isL
   return (
     <DialogContent className="sm:max-w-4xl">
       <DialogHeader>
-        <DialogTitle>Chromas for {skin.name}</DialogTitle>
+        <DialogTitle className="font-headline">Chromas for {skin.name}</DialogTitle>
         <DialogDescription>Select the number of random chromas you want to see.</DialogDescription>
       </DialogHeader>
       <div className="space-y-6">
         <div className="space-y-4 pt-2">
           <div className="flex justify-between items-center">
-            <Label htmlFor="chroma-count-slider" className="text-base">Number of Chromas</Label>
+            <Label htmlFor="chroma-count-slider" className="text-base font-headline">Number of Chromas</Label>
             <span className="font-semibold text-lg text-primary rounded-md bg-primary/10 px-3 py-1">{count[0]}</span>
           </div>
           <Slider
@@ -54,7 +52,7 @@ function ChromaDialogContent({ skin, champion, onGenerate, suggestedChromas, isL
             aria-label="Number of chromas slider"
           />
         </div>
-        <Button onClick={onGenerate} size="lg" className="w-full" disabled={isLoading}>
+        <Button onClick={onGenerate} size="lg" className="w-full font-headline tracking-wider" disabled={isLoading}>
           {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Dice5 className="mr-2 h-5 w-5" />}
           Get Random Chromas
         </Button>
@@ -244,7 +242,7 @@ export function SkinPicker() {
 
   return (
     <div className="w-full max-w-6xl space-y-8 z-10">
-      <Card className="w-full animate-fade-in-up border-primary/20 bg-background/80 backdrop-blur-sm shadow-2xl shadow-primary/10">
+      <Card className="w-full animate-fade-in-up border-primary/20 bg-card/80 backdrop-blur-sm shadow-2xl shadow-primary/10">
         <CardHeader className="text-center items-center">
         <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 border border-primary/20 shadow-inner shadow-primary/10 overflow-hidden">
              {latestVersion ? (
@@ -253,12 +251,12 @@ export function SkinPicker() {
                 <Skeleton className="h-20 w-20 rounded-full" />
               )}
           </div>
-          <CardTitle className="text-3xl font-bold">League Skin & Chroma Picker</CardTitle>
+          <CardTitle className="text-4xl font-headline tracking-wider text-primary">League Skin & Chroma Picker</CardTitle>
           <CardDescription className="text-lg text-muted-foreground">Get random suggestions for your favorite champions</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6 p-6">
           <div className="space-y-2">
-            <Label htmlFor="champion-select" className="text-base">Champion</Label>
+            <Label htmlFor="champion-select" className="text-base font-headline">Champion</Label>
             {isFetchingChampions ? (
               <Skeleton className="h-10 w-full" />
             ) : (
@@ -305,7 +303,7 @@ export function SkinPicker() {
           </div>
           <div className="space-y-4 pt-2">
             <div className="flex justify-between items-center">
-                <Label htmlFor="skin-count-slider" className="text-base">Number of Skins</Label>
+                <Label htmlFor="skin-count-slider" className="text-base font-headline">Number of Skins</Label>
                 <span className="font-semibold text-lg text-primary rounded-md bg-primary/10 px-3 py-1">{skinCount[0]}</span>
             </div>
             <Slider
@@ -321,7 +319,7 @@ export function SkinPicker() {
           </div>
         </CardContent>
         <CardFooter>
-          <Button onClick={handleSuggestSkins} size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-lg font-bold shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30" disabled={isLoading || !selectedChampion || isFetchingChampions}>
+          <Button onClick={handleSuggestSkins} size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-lg font-headline tracking-wider shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30" disabled={isLoading || !selectedChampion || isFetchingChampions}>
             {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}
             Get Random Skins
           </Button>
@@ -331,7 +329,7 @@ export function SkinPicker() {
       {isLoading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {Array.from({ length: skinCount[0] }).map((_, index) => (
-            <Card key={index} className="overflow-hidden border-primary/20 bg-background/80">
+            <Card key={index} className="overflow-hidden border-primary/20 bg-card/80">
               <Skeleton className="aspect-[9/16] w-full" />
               <CardHeader><Skeleton className="h-6 w-3/4 rounded-md" /></CardHeader>
               <CardFooter><Skeleton className="h-10 w-full rounded-md" /></CardFooter>
@@ -343,7 +341,7 @@ export function SkinPicker() {
       {suggestedSkins.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-fade-in">
           {suggestedSkins.map((skin) => (
-            <Card key={skin.id} className="overflow-hidden border-primary/20 bg-background/80 backdrop-blur-sm shadow-lg flex flex-col">
+            <Card key={skin.id} className="overflow-hidden border-primary/20 bg-card/80 backdrop-blur-sm shadow-lg flex flex-col">
               <div className="relative aspect-[9/16] w-full">
                 <Image src={skin.imageUrl} alt={skin.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
               </div>
@@ -351,7 +349,7 @@ export function SkinPicker() {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <CardTitle className="text-xl truncate">{skin.name}</CardTitle>
+                      <CardTitle className="text-2xl truncate font-headline">{skin.name}</CardTitle>
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>{skin.name}</p>
@@ -362,7 +360,7 @@ export function SkinPicker() {
               <CardFooter className="grid grid-cols-1 gap-2">
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="outline">
+                    <Button variant="outline" className="font-headline">
                       {skin.tier && skin.tier.iconUrl ? (
                           <div className="relative w-5 h-5 mr-2 flex-shrink-0">
                             <Image src={skin.tier.iconUrl} alt={skin.tier.name} fill unoptimized className="object-contain" />
@@ -384,7 +382,7 @@ export function SkinPicker() {
                 {skin.chromas && selectedChampion && (
                   <Dialog onOpenChange={(open) => !open && setChromaSkin(null)}>
                     <DialogTrigger asChild>
-                      <Button onClick={() => handleChromaButtonClick(skin)}><Palette className="mr-2 h-4 w-4" /> Chromas</Button>
+                      <Button onClick={() => handleChromaButtonClick(skin)} className="font-headline"><Palette className="mr-2 h-4 w-4" /> Chromas</Button>
                     </DialogTrigger>
                     {chromaSkin && chromaSkin.id === skin.id && (
                        <ChromaDialogContent
@@ -408,4 +406,3 @@ export function SkinPicker() {
     </div>
   );
 }
-

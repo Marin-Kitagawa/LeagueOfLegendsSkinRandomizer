@@ -2,53 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Girly';
+  src: url('/fonts/Girly.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 @layer base {
   :root {
-    --background: 224 71.4% 4.1%;
-    --foreground: 210 20% 98%;
-    --card: 224 71.4% 4.1%;
-    --card-foreground: 210 20% 98%;
-    --popover: 224 71.4% 4.1%;
-    --popover-foreground: 210 20% 98%;
-    --primary: 214 91% 65%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 20% 98%;
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
-    --accent: 214 91% 65%;
-    --accent-foreground: 210 20% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 215 27.9% 16.9%;
-    --input: 215 27.9% 16.9%;
-    --ring: 214 91% 65%;
-    --radius: 0.5rem;
+    --background: 30 50% 98%;
+    --foreground: 30 10% 20%;
+    --card: 330 100% 97%;
+    --card-foreground: 30 10% 20%;
+    --popover: 330 100% 97%;
+    --popover-foreground: 30 10% 20%;
+    --primary: 340 85% 60%;
+    --primary-foreground: 30 50% 98%;
+    --secondary: 330 80% 90%;
+    --secondary-foreground: 340 85% 40%;
+    --muted: 330 80% 90%;
+    --muted-foreground: 30 10% 45%;
+    --accent: 340 90% 80%;
+    --accent-foreground: 340 85% 30%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 30 50% 98%;
+    --border: 330 80% 85%;
+    --input: 330 80% 85%;
+    --ring: 340 85% 60%;
+    --radius: 0.8rem;
   }
   .dark {
-    --background: 224 71.4% 4.1%;
-    --foreground: 210 20% 98%;
-    --card: 224 71.4% 4.1%;
-    --card-foreground: 210 20% 98%;
-    --popover: 224 71.4% 4.1%;
-    --popover-foreground: 210 20% 98%;
-    --primary: 214 91% 65%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 20% 98%;
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
-    --accent: 214 91% 65%;
-    --accent-foreground: 210 20% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 215 27.9% 16.9%;
-    --input: 215 27.9% 16.9%;
-    --ring: 214 91% 65%;
+    --background: 340 10% 15%;
+    --foreground: 30 30% 90%;
+    --card: 340 12% 20%;
+    --card-foreground: 30 30% 90%;
+    --popover: 340 12% 20%;
+    --popover-foreground: 30 30% 90%;
+    --primary: 340 85% 60%;
+    --primary-foreground: 30 50% 98%;
+    --secondary: 340 15% 25%;
+    --secondary-foreground: 30 30% 90%;
+    --muted: 340 15% 25%;
+    --muted-foreground: 30 20% 70%;
+    --accent: 340 80% 40%;
+    --accent-foreground: 30 30% 90%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 30 30% 90%;
+    --border: 340 15% 25%;
+    --input: 340 15% 25%;
+    --ring: 340 85% 60%;
   }
 }
 
@@ -63,7 +70,7 @@ body {
 
 @layer utilities {
   .animated-gradient {
-    background: linear-gradient(-45deg, hsl(var(--background)), hsl(var(--secondary)), hsl(var(--background)), hsl(var(--primary) / 0.2));
+    background: linear-gradient(-45deg, hsl(var(--background)), hsl(var(--secondary)), hsl(var(--background)), hsl(var(--primary) / 0.3));
     background-size: 400% 400%;
     animation: gradient 15s ease infinite;
   }

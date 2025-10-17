@@ -348,7 +348,7 @@ export function SkinPicker() {
               </div>
               <CardHeader className="flex-grow">
                 <div className="flex items-center gap-2">
-                  {skin.tier && (
+                  {skin.tier && skin.tier.iconUrl && (
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>

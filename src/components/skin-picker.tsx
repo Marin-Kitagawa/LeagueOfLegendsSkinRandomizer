@@ -204,6 +204,9 @@ export function SkinPicker() {
                 </Card>
               </DialogTrigger>
               <DialogContent className="sm:max-w-4xl p-0 border-0">
+                  <DialogHeader>
+                    <DialogTitle className="sr-only">{skin.name}</DialogTitle>
+                  </DialogHeader>
                   <div className="relative aspect-video w-full">
                       <Image
                         src={skin.fullImageUrl}

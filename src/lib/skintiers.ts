@@ -14,13 +14,16 @@ const skinTiers: Record<string, Omit<SkinTier, 'iconUrl'> & { icon: string }> = 
 };
 
 const LEGACY_TIER: Omit<SkinTier, 'iconUrl'> & { icon: string } = { name: 'Legacy', icon: 'legacy' };
-const CDRAGON_ICON_BASE_URL = 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-collections/global/default/images/skin-gem-icons';
+const CDRAGON_API_VERSION = 'v1';
+const CDRAGON_ICON_BASE_URL = `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/${CDRAGON_API_VERSION}/rarity-gem-icons`;
+const CDRAGON_LEGACY_ICON_URL = 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-collections/global/default/images/skin-gem-icons/legacy.png';
+
 
 export function getSkinTier(rarity: string, isLegacy: boolean): SkinTier | null {
     if (isLegacy) {
         return {
             name: LEGACY_TIER.name,
-            iconUrl: `${CDRAGON_ICON_BASE_URL}/legacy.png`
+            iconUrl: CDRAGON_LEGACY_ICON_URL
         };
     }
 

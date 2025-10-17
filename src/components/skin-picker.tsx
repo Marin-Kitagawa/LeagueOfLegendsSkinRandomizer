@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
-import { Gem, Loader2, Search, Sparkles } from 'lucide-react';
+import { Loader2, Search, Sparkles } from 'lucide-react';
 import { getChampions, getSkinImageUrl, type Champion, type Skin } from '@/lib/champions';
 
 import { Button } from '@/components/ui/button';
@@ -106,8 +106,8 @@ export function SkinPicker() {
     <div className="w-full max-w-4xl space-y-8 z-10">
       <Card className="w-full animate-fade-in-up border-primary/20 bg-background/80 backdrop-blur-sm shadow-2xl shadow-primary/10">
         <CardHeader className="text-center items-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 border border-primary/20 shadow-inner shadow-primary/10">
-            <Gem className="h-8 w-8 text-primary" />
+          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 border border-primary/20 shadow-inner shadow-primary/10 overflow-hidden">
+            <Image src="https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/4655.png" alt="Spirit Blossom Ahri Icon" width={80} height={80} className="scale-110" />
           </div>
           <CardTitle className="text-3xl font-bold">Skin Picker</CardTitle>
           <CardDescription className="text-lg text-muted-foreground">Get random skin suggestions for your favorite champion</CardDescription>

@@ -1,7 +1,5 @@
-import { unstable_cache } from 'next/cache';
 
 const DDRAGON_URL = 'https://ddragon.leagueoflegends.com';
-const CACHE_REVALIDATE_SECONDS = 60 * 60 * 24; // 24 hours
 
 export type Skin = {
   id: string;
@@ -40,17 +38,16 @@ export function getSkinImageUrl(championId: string, skinNum: number) {
   return `${DDRAGON_URL}/img/champion/splash/${championId}_${skinNum}.jpg`;
 }
 
-export const getChampions = unstable_cache(
-  async (): Promise<Champion[]> => {
+export const getChampions = async (): Promise<Champion[]> => {
     try {
-      const versionsResponse = await fetch(`${DDRAGON_URL}/api/versions.json`);
+      const versionsResponse = await fetch(`${DDRAGON_URL}/api/versions.json`, { next: { revalidate: 3600 } });
       if (!versionsResponse.ok) {
         throw new Error(`Failed to fetch versions: ${versionsResponse.statusText}`);
       }
       const versions = await versionsResponse.json();
       const latestVersion = versions[0];
 
-      const response = await fetch(`${DDRAGON_URL}/cdn/${latestVersion}/data/en_US/championFull.json`);
+      const response = await fetch(`${DDRAGON_URL}/cdn/${latestVersion}/data/en_US/championFull.json`, { next: { revalidate: 3600 } });
       if (!response.ok) {
         throw new Error(`Failed to fetch champion data: ${response.statusText}`);
       }
@@ -72,7 +69,4 @@ export const getChampions = unstable_cache(
       console.error("Error fetching from Data Dragon:", error);
       throw new Error('Could not retrieve champion data from the official API.');
     }
-  },
-  ['ddragon-champions-data'],
-  { revalidate: CACHE_REVALIDATE_SECONDS }
-);
+  };

@@ -59,18 +59,27 @@ type CommunityDragonChampion = {
   }[];
 }
 
+export const getLatestVersion = async (): Promise<string> => {
+    try {
+        const versionsResponse = await fetch(`${DDRAGON_URL}/api/versions.json`, { next: { revalidate: 3600 } });
+        if (!versionsResponse.ok) {
+            throw new Error(`Failed to fetch versions: ${versionsResponse.statusText}`);
+        }
+        const versions = await versionsResponse.json();
+        return versions[0];
+    } catch (error) {
+        console.error("Error fetching latest version from Data Dragon:", error);
+        throw new Error('Could not retrieve latest version from the official API.');
+    }
+}
+
 export function getSkinImageUrl(championId: string, skinNum: number, type: 'splash' | 'loading' = 'splash') {
   return `${DDRAGON_URL}/cdn/img/champion/${type}/${championId}_${skinNum}.jpg`;
 }
 
 export const getChampions = async (): Promise<Champion[]> => {
     try {
-      const versionsResponse = await fetch(`${DDRAGON_URL}/api/versions.json`, { next: { revalidate: 3600 } });
-      if (!versionsResponse.ok) {
-        throw new Error(`Failed to fetch versions: ${versionsResponse.statusText}`);
-      }
-      const versions = await versionsResponse.json();
-      const latestVersion = versions[0];
+      const latestVersion = await getLatestVersion();
 
       const response = await fetch(`${DDRAGON_URL}/cdn/${latestVersion}/data/en_US/championFull.json`, { next: { revalidate: 3600 } });
       if (!response.ok) {

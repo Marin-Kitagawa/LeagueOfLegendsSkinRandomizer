@@ -1,9 +1,10 @@
+
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { Loader2, Search, Sparkles, Dice5, Image as ImageIcon, Palette } from 'lucide-react';
-import { getChampions, getChampionChromas, type Champion, type Skin, type Chroma, getSkinImageUrl } from '@/lib/champions';
+import { getChampions, getChampionChromas, type Champion, type Skin, type Chroma, getSkinImageUrl, getLatestVersion } from '@/lib/champions';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -95,6 +96,7 @@ export function SkinPicker() {
   const [suggestedSkins, setSuggestedSkins] = useState<SuggestedSkin[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingChampions, setIsFetchingChampions] = useState(true);
+  const [latestVersion, setLatestVersion] = useState<string | null>(null);
 
   // States for Chroma Dialog
   const [chromaSkin, setChromaSkin] = useState<SuggestedSkin | null>(null);
@@ -105,12 +107,16 @@ export function SkinPicker() {
   const [maxChromas, setMaxChromas] = useState(1);
 
   useEffect(() => {
-    async function fetchChampions() {
+    async function fetchInitialData() {
       setIsFetchingChampions(true);
       try {
-        const champs = await getChampions();
+        const [champs, version] = await Promise.all([
+            getChampions(),
+            getLatestVersion()
+        ]);
         setChampions(champs);
         setFilteredChampions(champs);
+        setLatestVersion(version);
         
         const lastSelectedId = localStorage.getItem('selectedChampionId');
         if (lastSelectedId && champs.some(c => c.id === lastSelectedId)) {
@@ -118,7 +124,7 @@ export function SkinPicker() {
         }
       } catch (e: any) {
         toast({
-          title: 'Error fetching champions',
+          title: 'Error fetching game data',
           description: e.message || 'Could not load champion data. Please try again later.',
           variant: 'destructive',
         });
@@ -126,7 +132,7 @@ export function SkinPicker() {
         setIsFetchingChampions(false);
       }
     }
-    fetchChampions();
+    fetchInitialData();
   }, [toast]);
 
   useEffect(() => {
@@ -139,6 +145,7 @@ export function SkinPicker() {
 
   const selectedChampion = useMemo(() => champions.find(c => c.id === selectedChampionId), [selectedChampionId, champions]);
   const maxSkins = selectedChampion ? selectedChampion.skins.length : 1;
+  const logoUrl = latestVersion ? `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/profileicon/4655.png` : '/logo.png';
 
   const handleChampionChange = (championId: string, saveToStorage = true) => {
     setSelectedChampionId(championId);
@@ -239,7 +246,11 @@ export function SkinPicker() {
       <Card className="w-full animate-fade-in-up border-primary/20 bg-background/80 backdrop-blur-sm shadow-2xl shadow-primary/10">
         <CardHeader className="text-center items-center">
         <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 border border-primary/20 shadow-inner shadow-primary/10 overflow-hidden">
-             <Image src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_27.jpg" alt="Spirit Blossom Ahri" width={80} height={80} className="scale-150" unoptimized/>
+             {latestVersion ? (
+                <Image src={logoUrl} alt="Spirit Bonds Ahri Summoner Icon" width={80} height={80} unoptimized/>
+              ) : (
+                <Skeleton className="h-20 w-20 rounded-full" />
+              )}
           </div>
           <CardTitle className="text-3xl font-bold">League Skin & Chroma Picker</CardTitle>
           <CardDescription className="text-lg text-muted-foreground">Get random suggestions for your favorite champions</CardDescription>

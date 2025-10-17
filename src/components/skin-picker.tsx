@@ -35,10 +35,10 @@ export function SkinPicker() {
         const champs = await getChampions();
         setChampions(champs);
         setFilteredChampions(champs);
-      } catch (e) {
+      } catch (e: any) {
         toast({
           title: 'Error fetching champions',
-          description: 'Could not load champion data. Please try again later.',
+          description: e.message || 'Could not load champion data. Please try again later.',
           variant: 'destructive',
         });
       } finally {

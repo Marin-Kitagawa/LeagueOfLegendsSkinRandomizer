@@ -43,9 +43,6 @@ type ChampionListResponse = {
 };
 
 export function getSkinImageUrl(championId: string, skinNum: number) {
-  if (skinNum === 0) {
-    return `${DDRAGON_URL}/img/champion/splash/${championId}_0.jpg`;
-  }
   return `${DDRAGON_URL}/img/champion/splash/${championId}_${skinNum}.jpg`;
 }
 
@@ -96,9 +93,9 @@ export const getChampions = unstable_cache(
       return champions;
     } catch (error) {
       console.error('Error fetching champion data:', error);
-      return [];
+      throw new Error('Failed to fetch champion data from Data Dragon API.');
     }
   },
-  ['champions'],
+  ['champions-data'],
   { revalidate: CACHE_REVALIDATE_SECONDS }
 );

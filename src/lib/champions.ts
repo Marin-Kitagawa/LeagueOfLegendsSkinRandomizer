@@ -18,29 +18,28 @@ export type Champion = {
 };
 
 export type ChampionData = {
-  id: string;
-  name: string;
-  title: string;
-  skins: {
     id: string;
-    num: number;
     name: string;
-    chromas: boolean;
-  }[];
+    title: string;
+    skins: {
+        id: string;
+        num: number;
+        name: string;
+        chromas: boolean;
+    }[];
 };
 
-type ChampionListResponse = {
-  type: string;
-  format: string;
-  version: string;
-  data: {
-    [key: string]: {
-      id: string;
-      name: string;
-      title: string;
-    };
-  };
-};
+type ChampionFullData = {
+    [key: string]: ChampionData;
+}
+
+type ChampionFullResponse = {
+    type: string;
+    format: string;
+    version: string;
+    data: ChampionFullData;
+}
+
 
 export function getSkinImageUrl(championId: string, skinNum: number) {
   return `${DDRAGON_URL}/img/champion/splash/${championId}_${skinNum}.jpg`;
@@ -54,31 +53,13 @@ export const getChampions = unstable_cache(
       const versions = await versionsResponse.json();
       const latestVersion = versions[0];
 
-      const championListResponse = await fetch(
-        `${DDRAGON_URL}/cdn/${latestVersion}/data/en_US/champion.json`
+      const championFullResponse = await fetch(
+        `${DDRAGON_URL}/cdn/${latestVersion}/data/en_US/championFull.json`
       );
-      if (!championListResponse.ok) throw new Error('Failed to fetch champions list');
-      const championListData: ChampionListResponse = await championListResponse.json();
-
-      const championDetailsPromises = Object.values(championListData.data).map(
-        async (championInfo) => {
-          const championDetailResponse = await fetch(
-            `${DDRAGON_URL}/cdn/${latestVersion}/data/en_US/champion/${championInfo.id}.json`
-          );
-          if (!championDetailResponse.ok) {
-            console.error(`Failed to fetch details for ${championInfo.id}`);
-            return null;
-          }
-          const champDetailData = await championDetailResponse.json();
-          return champDetailData.data[championInfo.id] as ChampionData;
-        }
-      );
-
-      const championsDetails = (await Promise.all(championDetailsPromises)).filter(
-        (c) => c !== null
-      ) as ChampionData[];
-
-      const champions: Champion[] = championsDetails
+      if (!championFullResponse.ok) throw new Error('Failed to fetch champion data');
+      const championFullData: ChampionFullResponse = await championFullResponse.json();
+      
+      const champions: Champion[] = Object.values(championFullData.data)
         .map((champ) => ({
           id: champ.id,
           name: champ.name,
@@ -96,6 +77,6 @@ export const getChampions = unstable_cache(
       throw new Error('Failed to fetch champion data from Data Dragon API.');
     }
   },
-  ['champions-data'],
+  ['champions-data-full'],
   { revalidate: CACHE_REVALIDATE_SECONDS }
 );

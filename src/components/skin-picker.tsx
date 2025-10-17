@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
-import { Gem, Loader2, Search } from 'lucide-react';
+import { Gem, Loader2, Search, Sparkles } from 'lucide-react';
 import { getChampions, getSkinImageUrl, type Champion, type Skin } from '@/lib/champions';
 
 import { Button } from '@/components/ui/button';
@@ -101,14 +101,14 @@ export function SkinPicker() {
   };
 
   return (
-    <div className="w-full max-w-4xl space-y-8">
-      <Card className="w-full animate-fade-in-up shadow-2xl">
+    <div className="w-full max-w-4xl space-y-8 z-10">
+      <Card className="w-full animate-fade-in-up border-primary/20 bg-background/80 backdrop-blur-sm shadow-2xl shadow-primary/10">
         <CardHeader className="text-center items-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 border border-primary/20 shadow-inner shadow-primary/10">
             <Gem className="h-8 w-8 text-primary" />
           </div>
           <CardTitle className="text-3xl font-bold">Skin Picker</CardTitle>
-          <CardDescription className="text-lg">Get random skin suggestions for your favorite champion</CardDescription>
+          <CardDescription className="text-lg text-muted-foreground">Get random skin suggestions for your favorite champion</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6 p-6">
           <div className="space-y-2">
@@ -161,8 +161,8 @@ export function SkinPicker() {
           </div>
         </CardContent>
         <CardFooter>
-          <Button onClick={handleSuggestSkins} size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90 text-lg font-bold" disabled={isLoading || !selectedChampion || isFetchingChampions}>
-            {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
+          <Button onClick={handleSuggestSkins} size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-lg font-bold shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30" disabled={isLoading || !selectedChampion || isFetchingChampions}>
+            {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}
             Get Skins
           </Button>
         </CardFooter>
@@ -171,7 +171,7 @@ export function SkinPicker() {
       {isLoading && (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: skinCount[0] }).map((_, index) => (
-            <Card key={index} className="overflow-hidden">
+            <Card key={index} className="overflow-hidden border-primary/20 bg-background/80">
                 <Skeleton className="aspect-video w-full" />
                 <CardHeader>
                     <Skeleton className="h-6 w-3/4 rounded-md" />
@@ -184,8 +184,8 @@ export function SkinPicker() {
       {suggestedSkins.length > 0 && (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 animate-fade-in">
           {suggestedSkins.map((skin) => (
-            <Card key={skin.id} className="overflow-hidden shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-primary/30">
-              <div className="relative aspect-[7/12] w-full">
+            <Card key={skin.id} className="overflow-hidden border-primary/20 bg-background/80 backdrop-blur-sm shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-primary/20">
+              <div className="relative aspect-[16/9] w-full">
                 <Image
                   src={skin.imageUrl}
                   alt={skin.name}
@@ -195,7 +195,7 @@ export function SkinPicker() {
                 />
               </div>
               <CardHeader>
-                <CardTitle className="text-xl">{skin.name}</CardTitle>
+                <CardTitle className="text-xl truncate">{skin.name}</CardTitle>
               </CardHeader>
             </Card>
           ))}

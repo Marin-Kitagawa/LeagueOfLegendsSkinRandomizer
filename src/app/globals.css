@@ -60,3 +60,19 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .animated-gradient {
+    animation: gradient 15s ease infinite;
+    background-size: 400% 400%;
+    background-image: radial-gradient(circle at 25% 0%, hsl(var(--primary) / 0.3), transparent 40%),
+                      radial-gradient(circle at 85% 20%, hsl(var(--accent) / 0.2), transparent 50%),
+                      radial-gradient(circle at 45% 90%, hsl(var(--secondary) / 0.3), transparent 50%);
+  }
+
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+}

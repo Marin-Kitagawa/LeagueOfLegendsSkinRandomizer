@@ -1,5 +1,14 @@
 
 const DDRAGON_URL = 'https://ddragon.leagueoflegends.com';
+const CDRAGON_URL = 'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default';
+
+
+export type Chroma = {
+  id: string;
+  name: string;
+  chromaPath: string;
+  skinId: string;
+};
 
 export type Skin = {
   id: string;
@@ -10,6 +19,7 @@ export type Skin = {
 
 export type Champion = {
   id: string;
+  key: string;
   name: string;
   skins: Skin[];
   title: string;
@@ -22,6 +32,7 @@ type ChampionFullData = {
     data: {
         [key: string]: {
             id: string;
+            key: string;
             name: string;
             title: string;
             skins: {
@@ -32,6 +43,20 @@ type ChampionFullData = {
             }[];
         }
     };
+}
+
+type CommunityDragonChampion = {
+  id: number;
+  name: string;
+  skins: {
+    id: number;
+    name: string;
+    chromas: {
+      id: number;
+      name: string;
+      chromaPath: string;
+    }[];
+  }[];
 }
 
 export function getSkinImageUrl(championId: string, skinNum: number, type: 'splash' | 'loading' = 'splash') {
@@ -56,6 +81,7 @@ export const getChampions = async (): Promise<Champion[]> => {
       
       const champions: Champion[] = Object.values(championData.data).map(champ => ({
         id: champ.id,
+        key: champ.key,
         name: champ.name,
         title: champ.title,
         skins: champ.skins.map(skin => ({
@@ -70,3 +96,36 @@ export const getChampions = async (): Promise<Champion[]> => {
       throw new Error('Could not retrieve champion data from the official API.');
     }
   };
+
+
+export const getChampionChromas = async (championKey: string): Promise<Chroma[]> => {
+    try {
+        const response = await fetch(`${CDRAGON_URL}/v1/champions/${championKey}.json`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch champion data from Community Dragon: ${response.statusText}`);
+        }
+        const champData: CommunityDragonChampion = await response.json();
+        const allChromas: Chroma[] = [];
+
+        champData.skins.forEach(skin => {
+            if (skin.chromas && skin.chromas.length > 1) { // Often first "chroma" is the base skin
+                skin.chromas.forEach(chroma => {
+                    // Filter out the base skin which is often duplicated in chromas array
+                    if (chroma.id.toString() !== skin.id.toString()) {
+                        allChromas.push({
+                            id: chroma.id.toString(),
+                            name: chroma.name,
+                            chromaPath: `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/${chroma.chromaPath.toLowerCase()}`,
+                            skinId: skin.id.toString()
+                        });
+                    }
+                });
+            }
+        });
+
+        return allChromas;
+    } catch (error) {
+        console.error("Error fetching from Community Dragon:", error);
+        throw new Error('Could not retrieve chroma data from the Community Dragon API.');
+    }
+};

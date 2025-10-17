@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { Loader2, Search, Sparkles, Dice5, Image as ImageIcon, Palette } from 'lucide-react';
-import { getChampions, getSkinImageUrl, getChampionChromas, type Champion, type Skin, type Chroma } from '@/lib/champions';
+import { getChampions, getChampionChromas, type Champion, type Skin, type Chroma, getSkinImageUrl } from '@/lib/champions';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -239,7 +239,7 @@ export function SkinPicker() {
       <Card className="w-full animate-fade-in-up border-primary/20 bg-background/80 backdrop-blur-sm shadow-2xl shadow-primary/10">
         <CardHeader className="text-center items-center">
         <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 border border-primary/20 shadow-inner shadow-primary/10 overflow-hidden">
-             <Image src="/logo.png" alt="App Logo" width={80} height={80} className="scale-110" unoptimized/>
+             <Image src="https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_27.jpg" alt="App Logo" width={80} height={80} className="scale-150" unoptimized/>
           </div>
           <CardTitle className="text-3xl font-bold">League Skin & Chroma Picker</CardTitle>
           <CardDescription className="text-lg text-muted-foreground">Get random suggestions for your favorite champions</CardDescription>

@@ -51,7 +51,7 @@ type CommunityDragonChampion = {
   skins: {
     id: number;
     name: string;
-    chromas: {
+    chromas?: {
       id: number;
       name: string;
       chromaPath: string;
@@ -100,9 +100,11 @@ export const getChampions = async (): Promise<Champion[]> => {
 
 export const getChampionChromas = async (championKey: string): Promise<Chroma[]> => {
     try {
-        const response = await fetch(`${CDRAGON_URL}/v1/champions/${championKey}.json`);
+        const response = await fetch(`${CDRAGON_URL}/v1/champions/${championKey}.json`, { next: { revalidate: 3600 } });
         if (!response.ok) {
-            throw new Error(`Failed to fetch champion data from Community Dragon: ${response.statusText}`);
+            // It's common for this unofficial API to be missing data for some champs, so don't throw, just return empty.
+            console.warn(`Could not fetch chroma data for champion key ${championKey}: ${response.statusText}`);
+            return [];
         }
         const champData: CommunityDragonChampion = await response.json();
         const allChromas: Chroma[] = [];
@@ -115,7 +117,7 @@ export const getChampionChromas = async (championKey: string): Promise<Chroma[]>
                         allChromas.push({
                             id: chroma.id.toString(),
                             name: chroma.name,
-                            chromaPath: `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/${chroma.chromaPath.toLowerCase()}`,
+                            chromaPath: `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/${chroma.chromaPath.toLowerCase().replace('/lol-game-data/assets/', '')}`,
                             skinId: skin.id.toString()
                         });
                     }
@@ -126,6 +128,6 @@ export const getChampionChromas = async (championKey: string): Promise<Chroma[]>
         return allChromas;
     } catch (error) {
         console.error("Error fetching from Community Dragon:", error);
-        throw new Error('Could not retrieve chroma data from the Community Dragon API.');
+        throw new Error('Could not retrieve champion chroma data.');
     }
 };

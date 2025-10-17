@@ -2,12 +2,12 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
-import { Loader2, Search, Sparkles, Dice5 } from 'lucide-react';
+import { Loader2, Search, Sparkles, Dice5, Image as ImageIcon, Palette } from 'lucide-react';
 import { getChampions, getSkinImageUrl, getChampionChromas, type Champion, type Skin, type Chroma } from '@/lib/champions';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -17,8 +17,73 @@ import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from './ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
-type SuggestedSkin = Skin & { imageUrl: string; fullImageUrl: string; championId: string };
+type SuggestedSkin = Skin & { imageUrl: string; championId: string };
 type SuggestedChroma = Chroma & { imageUrl: string };
+
+function ChromaDialogContent({ skin, champion, onGenerate, suggestedChromas, isLoading, count, setCount, maxChromas }: {
+  skin: SuggestedSkin,
+  champion: Champion,
+  onGenerate: () => void,
+  suggestedChromas: SuggestedChroma[],
+  isLoading: boolean,
+  count: number[],
+  setCount: (value: number[]) => void,
+  maxChromas: number,
+}) {
+  return (
+    <DialogContent className="sm:max-w-4xl">
+      <DialogHeader>
+        <DialogTitle>Chromas for {skin.name}</DialogTitle>
+        <DialogDescription>Select the number of random chromas you want to see.</DialogDescription>
+      </DialogHeader>
+      <div className="space-y-6">
+        <div className="space-y-4 pt-2">
+          <div className="flex justify-between items-center">
+            <Label htmlFor="chroma-count-slider" className="text-base">Number of Chromas</Label>
+            <span className="font-semibold text-lg text-primary rounded-md bg-primary/10 px-3 py-1">{count[0]}</span>
+          </div>
+          <Slider
+            id="chroma-count-slider"
+            min={1}
+            max={maxChromas}
+            step={1}
+            value={count}
+            onValueChange={setCount}
+            aria-label="Number of chromas slider"
+          />
+        </div>
+        <Button onClick={onGenerate} size="lg" className="w-full" disabled={isLoading}>
+          {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Dice5 className="mr-2 h-5 w-5" />}
+          Get Random Chromas
+        </Button>
+      </div>
+
+      {isLoading && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-4">
+          {Array.from({ length: count[0] }).map((_, index) => (
+            <div key={index} className="space-y-2">
+              <Skeleton className="aspect-square w-full rounded-lg" />
+              <Skeleton className="h-5 w-3/4 mx-auto rounded-md" />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {suggestedChromas.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-4">
+          {suggestedChromas.map(chroma => (
+            <div key={chroma.id} className="space-y-2 text-center">
+              <div className="relative aspect-square w-full">
+                <Image src={chroma.imageUrl} alt={chroma.name} fill className="object-cover rounded-lg" unoptimized />
+              </div>
+              <p className="text-sm font-medium truncate">{chroma.name}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </DialogContent>
+  )
+}
 
 export function SkinPicker() {
   const { toast } = useToast();
@@ -31,12 +96,13 @@ export function SkinPicker() {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingChampions, setIsFetchingChampions] = useState(true);
 
+  // States for Chroma Dialog
+  const [chromaSkin, setChromaSkin] = useState<SuggestedSkin | null>(null);
   const [chromaCount, setChromaCount] = useState([1]);
   const [suggestedChromas, setSuggestedChromas] = useState<SuggestedChroma[]>([]);
   const [isLoadingChromas, setIsLoadingChromas] = useState(false);
   const [availableChromas, setAvailableChromas] = useState<Chroma[]>([]);
   const [maxChromas, setMaxChromas] = useState(1);
-
 
   useEffect(() => {
     async function fetchChampions() {
@@ -50,7 +116,6 @@ export function SkinPicker() {
         if (lastSelectedId && champs.some(c => c.id === lastSelectedId)) {
           handleChampionChange(lastSelectedId, false);
         }
-
       } catch (e: any) {
         toast({
           title: 'Error fetching champions',
@@ -72,32 +137,6 @@ export function SkinPicker() {
     setFilteredChampions(filtered);
   }, [searchTerm, champions]);
 
-  useEffect(() => {
-    async function getChromasForSuggestedSkins() {
-      if (suggestedSkins.length === 0) {
-        setAvailableChromas([]);
-        return;
-      }
-      
-      const champion = champions.find(c => c.id === selectedChampionId);
-      if (!champion) return;
-      
-      try {
-        const allChromas = await getChampionChromas(champion.key);
-        const skinIdsWithChromas = suggestedSkins.filter(s => s.chromas).map(s => s.id);
-        const chromasForSkins = allChromas.filter(c => skinIdsWithChromas.includes(c.skinId));
-        
-        setAvailableChromas(chromasForSkins);
-        setMaxChromas(chromasForSkins.length > 0 ? chromasForSkins.length : 1);
-        setChromaCount([Math.min(chromaCount[0], chromasForSkins.length || 1)]);
-
-      } catch (e: any) {
-        console.error("Could not fetch chromas from Community Dragon", e);
-      }
-    }
-    getChromasForSuggestedSkins();
-  }, [suggestedSkins, selectedChampionId, champions, chromaCount]);
-
   const selectedChampion = useMemo(() => champions.find(c => c.id === selectedChampionId), [selectedChampionId, champions]);
   const maxSkins = selectedChampion ? selectedChampion.skins.length : 1;
 
@@ -114,8 +153,6 @@ export function SkinPicker() {
         setSkinCount([1]);
     }
     setSuggestedSkins([]);
-    setSuggestedChromas([]);
-    setAvailableChromas([]);
   };
   
   const handleRandomChampion = () => {
@@ -128,17 +165,12 @@ export function SkinPicker() {
 
   const handleSuggestSkins = () => {
     if (!selectedChampion) {
-      toast({
-        title: 'No Champion Selected',
-        description: 'Please select a champion first.',
-        variant: 'destructive',
-      });
+      toast({ title: 'No Champion Selected', description: 'Please select a champion first.', variant: 'destructive' });
       return;
     }
 
     setIsLoading(true);
     setSuggestedSkins([]);
-    setSuggestedChromas([]);
 
     setTimeout(() => {
       const shuffledSkins = [...selectedChampion.skins].sort(() => 0.5 - Math.random());
@@ -148,7 +180,6 @@ export function SkinPicker() {
         ...skin,
         championId: selectedChampion.id,
         imageUrl: getSkinImageUrl(selectedChampion.id, skin.num, 'loading'),
-        fullImageUrl: getSkinImageUrl(selectedChampion.id, skin.num, 'splash'),
       }));
 
       setSuggestedSkins(skinsWithImages);
@@ -156,15 +187,36 @@ export function SkinPicker() {
     }, 500);
   };
   
-  const handleSuggestChromas = () => {
-    if (availableChromas.length === 0) {
-      toast({
-        title: 'No Chromas Available',
-        description: 'None of the suggested skins have chromas.',
-        variant: 'destructive',
-      });
-      return;
+  const handleChromaButtonClick = async (skin: SuggestedSkin) => {
+    if (!selectedChampion) return;
+    setChromaSkin(skin);
+    setIsLoadingChromas(true);
+    setSuggestedChromas([]);
+    
+    try {
+      const allChromas = await getChampionChromas(selectedChampion.key);
+      const chromasForSkin = allChromas.filter(c => c.skinId === skin.id);
+
+      if (chromasForSkin.length === 0) {
+        toast({ title: 'No Chromas Found', description: `No chromas were found for ${skin.name}.`, variant: 'destructive' });
+        setAvailableChromas([]);
+        setMaxChromas(1);
+        setChromaCount([1]);
+        return;
+      }
+
+      setAvailableChromas(chromasForSkin);
+      setMaxChromas(chromasForSkin.length);
+      setChromaCount([1]);
+    } catch (e: any) {
+      toast({ title: 'Error Fetching Chromas', description: e.message, variant: 'destructive' });
+    } finally {
+      setIsLoadingChromas(false);
     }
+  };
+
+  const handleGenerateChromas = () => {
+    if (!chromaSkin) return;
     setIsLoadingChromas(true);
     setSuggestedChromas([]);
     
@@ -180,17 +232,17 @@ export function SkinPicker() {
       setSuggestedChromas(chromasWithImages);
       setIsLoadingChromas(false);
     }, 500);
-  }
+  };
 
   return (
-    <div className="w-full max-w-4xl space-y-8 z-10">
+    <div className="w-full max-w-6xl space-y-8 z-10">
       <Card className="w-full animate-fade-in-up border-primary/20 bg-background/80 backdrop-blur-sm shadow-2xl shadow-primary/10">
         <CardHeader className="text-center items-center">
-          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 border border-primary/20 shadow-inner shadow-primary/10 overflow-hidden">
-             <Image src="https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/4655.json" alt="Spirit Blossom Ahri Icon" width={80} height={80} className="scale-110" unoptimized/>
+        <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 border border-primary/20 shadow-inner shadow-primary/10 overflow-hidden">
+             <Image src="/logo.png" alt="App Logo" width={80} height={80} className="scale-110" unoptimized/>
           </div>
-          <CardTitle className="text-3xl font-bold">Skin & Chroma Picker</CardTitle>
-          <CardDescription className="text-lg text-muted-foreground">Get random suggestions for your favorite champion</CardDescription>
+          <CardTitle className="text-3xl font-bold">League Skin & Chroma Picker</CardTitle>
+          <CardDescription className="text-lg text-muted-foreground">Get random suggestions for your favorite champions</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6 p-6">
           <div className="space-y-2">
@@ -259,127 +311,69 @@ export function SkinPicker() {
         <CardFooter>
           <Button onClick={handleSuggestSkins} size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-lg font-bold shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30" disabled={isLoading || !selectedChampion || isFetchingChampions}>
             {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}
-            Get Skins
+            Get Random Skins
           </Button>
         </CardFooter>
       </Card>
 
       {isLoading && (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {Array.from({ length: skinCount[0] }).map((_, index) => (
             <Card key={index} className="overflow-hidden border-primary/20 bg-background/80">
-                <Skeleton className="aspect-[9/16] w-full" />
-                <CardHeader>
-                    <Skeleton className="h-6 w-3/4 rounded-md" />
-                </CardHeader>
+              <Skeleton className="aspect-[9/16] w-full" />
+              <CardHeader><Skeleton className="h-6 w-3/4 rounded-md" /></CardHeader>
+              <CardFooter><Skeleton className="h-10 w-full rounded-md" /></CardFooter>
             </Card>
           ))}
         </div>
       )}
 
       {suggestedSkins.length > 0 && (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 animate-fade-in">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-fade-in">
           {suggestedSkins.map((skin) => (
-            <Dialog key={skin.id}>
-              <DialogTrigger asChild>
-                <Card className="overflow-hidden border-primary/20 bg-background/80 backdrop-blur-sm shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-primary/20 cursor-pointer">
-                  <div className="relative aspect-[9/16] w-full">
-                    <Image
-                      src={skin.imageUrl}
-                      alt={skin.name}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                  </div>
-                  <CardHeader>
-                    <CardTitle className="text-xl truncate">{skin.name}</CardTitle>
-                  </CardHeader>
-                </Card>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-4xl p-0 border-0">
-                  <DialogHeader>
-                    <DialogTitle className="sr-only">{skin.name}</DialogTitle>
-                  </DialogHeader>
-                  <div className="relative aspect-video w-full">
-                      <Image
-                        src={skin.fullImageUrl}
-                        alt={skin.name}
-                        fill
-                        className="object-contain rounded-lg"
-                      />
-                  </div>
-              </DialogContent>
-            </Dialog>
-          ))}
-        </div>
-      )}
-      
-      {availableChromas.length > 0 && (
-        <Card className="w-full animate-fade-in-up border-accent/20 bg-background/80 backdrop-blur-sm shadow-2xl shadow-accent/10 mt-8">
-            <CardHeader>
-                <CardTitle>Random Chromas</CardTitle>
-                <CardDescription>Get random chromas for the suggested skins.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4 pt-2">
-                <div className="flex justify-between items-center">
-                    <Label htmlFor="chroma-count-slider" className="text-base">Number of Chromas</Label>
-                    <span className="font-semibold text-lg text-accent rounded-md bg-accent/10 px-3 py-1">{chromaCount[0]}</span>
-                </div>
-                <Slider
-                id="chroma-count-slider"
-                min={1}
-                max={maxChromas}
-                step={1}
-                value={chromaCount}
-                onValueChange={setChromaCount}
-                aria-label="Number of chromas slider"
-                />
-            </CardContent>
-            <CardFooter>
-                <Button onClick={handleSuggestChromas} size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90 text-lg font-bold" disabled={isLoadingChromas}>
-                    {isLoadingChromas ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Dice5 className="mr-2 h-5 w-5" />}
-                    Get Random Chromas
-                </Button>
-            </CardFooter>
-        </Card>
-      )}
-
-      {isLoadingChromas && (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-8">
-          {Array.from({ length: chromaCount[0] }).map((_, index) => (
-            <Card key={index} className="overflow-hidden border-accent/20 bg-background/80">
-                <Skeleton className="aspect-[9/16] w-full" />
-                <CardHeader>
-                    <Skeleton className="h-6 w-3/4 rounded-md" />
-                </CardHeader>
-            </Card>
-          ))}
-        </div>
-      )}
-
-      {suggestedChromas.length > 0 && (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 animate-fade-in mt-8">
-          {suggestedChromas.map((chroma) => (
-            <Card key={chroma.id} className="overflow-hidden border-accent/20 bg-background/80 backdrop-blur-sm shadow-lg">
+            <Card key={skin.id} className="overflow-hidden border-primary/20 bg-background/80 backdrop-blur-sm shadow-lg flex flex-col">
               <div className="relative aspect-[9/16] w-full">
-                <Image
-                  src={chroma.imageUrl}
-                  alt={chroma.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  unoptimized
-                />
+                <Image src={skin.imageUrl} alt={skin.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
               </div>
-              <CardHeader>
-                <CardTitle className="text-xl truncate">{chroma.name}</CardTitle>
+              <CardHeader className="flex-grow">
+                <CardTitle className="text-xl truncate">{skin.name}</CardTitle>
               </CardHeader>
+              <CardFooter className="grid grid-cols-1 gap-2">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline"><ImageIcon className="mr-2 h-4 w-4" /> Splash Art</Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-5xl p-0 border-0">
+                    <div className="relative aspect-video w-full">
+                      <Image src={getSkinImageUrl(skin.championId, skin.num, 'splash')} alt={skin.name} fill className="object-contain rounded-lg" />
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                {skin.chromas && selectedChampion && (
+                  <Dialog onOpenChange={(open) => !open && setChromaSkin(null)}>
+                    <DialogTrigger asChild>
+                      <Button onClick={() => handleChromaButtonClick(skin)}><Palette className="mr-2 h-4 w-4" /> Chromas</Button>
+                    </DialogTrigger>
+                    {chromaSkin && chromaSkin.id === skin.id && (
+                       <ChromaDialogContent
+                        skin={chromaSkin}
+                        champion={selectedChampion}
+                        onGenerate={handleGenerateChromas}
+                        suggestedChromas={suggestedChromas}
+                        isLoading={isLoadingChromas}
+                        count={chromaCount}
+                        setCount={setChromaCount}
+                        maxChromas={maxChromas}
+                       />
+                    )}
+                  </Dialog>
+                )}
+              </CardFooter>
             </Card>
           ))}
         </div>
       )}
-
     </div>
   );
 }

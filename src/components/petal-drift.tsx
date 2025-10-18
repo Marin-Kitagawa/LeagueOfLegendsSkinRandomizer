@@ -47,7 +47,7 @@ export function PetalDrift({
       {petals.map((style, i) => (
         <div
           key={i}
-          className="absolute top-0 animate-petal-drift"
+          className="absolute animate-petal-drift"
           style={style as React.CSSProperties}
         >
           <Petal />

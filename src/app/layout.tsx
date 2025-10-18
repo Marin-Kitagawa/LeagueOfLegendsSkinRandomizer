@@ -11,6 +11,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'Skin Picker',
   description: 'Select a champion and get random skin suggestions for League of Legends.',
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({

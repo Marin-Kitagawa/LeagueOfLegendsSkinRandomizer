@@ -22,22 +22,18 @@ export function PetalDrift({
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    const timer = setTimeout(() => setIsMounted(true), 100);
+    return () => clearTimeout(timer);
   }, []);
-
+  
   const petals = useMemo(() => {
-    const petalArray = [];
-    for (let i = 0; i < quantity; i++) {
-      const sway = (Math.random() - 0.5) * 2; // -1 to 1 for side-to-side motion
-      petalArray.push({
-        top: `${-10 + Math.random() * 110}vh`, // Start anywhere from -10vh to 100vh
-        left: `${Math.random() * 100}vw`,
-        animationDelay: `${Math.random() * 20}s`,
-        animationDuration: `${Math.random() * 10 + 10}s`, // 10s to 20s duration
-        '--sway': sway,
-      });
-    }
-    return petalArray;
+    if (typeof window === 'undefined') return [];
+    return Array.from({ length: quantity }, () => ({
+      left: `${Math.random() * 100}vw`,
+      animationDelay: `${Math.random() * 20}s`,
+      animationDuration: `${10 + Math.random() * 10}s`,
+      '--sway': (Math.random() - 0.5) * 3,
+    }));
   }, [quantity]);
 
   if (!isMounted) {
@@ -51,17 +47,11 @@ export function PetalDrift({
         className
       )}
     >
-      {petals.map((petal, index) => (
+      {petals.map((style, i) => (
         <div
-          key={index}
-          className="absolute animate-petal-drift"
-          style={{
-            top: petal.top,
-            left: petal.left,
-            animationDelay: petal.animationDelay,
-            animationDuration: petal.animationDuration,
-            ...petal as any, // For the --sway variable
-          }}
+          key={i}
+          className="absolute top-0 animate-petal-drift"
+          style={style as React.CSSProperties}
         >
           <Petal />
         </div>

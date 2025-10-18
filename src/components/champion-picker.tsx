@@ -295,7 +295,7 @@ export function ChampionPicker() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {Array.from({ length: championCount[0] }).map((_, index) => (
             <Card key={index} className="overflow-hidden border-primary/20 bg-card/80">
-              <Skeleton className="aspect-square w-full" />
+              <Skeleton className="aspect-[9/16] w-full" />
               <CardHeader>
                 <Skeleton className="h-6 w-3/4 rounded-md" />
                 <div className="flex gap-2 pt-2">
@@ -315,8 +315,8 @@ export function ChampionPicker() {
             <Card key={champion.id} className="overflow-hidden border-primary/20 bg-card/80 backdrop-blur-sm shadow-lg flex flex-col animate-fade-in-up">
               <Dialog>
                 <DialogTrigger asChild>
-                    <div className="relative aspect-square w-full cursor-pointer">
-                        <Image src={`${DDRAGON_URL}/cdn/${latestVersion}/img/champion/${champion.id}.png`} alt={champion.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+                    <div className="relative aspect-[9/16] w-full cursor-pointer">
+                        <Image src={getSkinImageUrl(champion.id, 0, 'loading')} alt={champion.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
                     </div>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-5xl p-0 border-0">
@@ -351,5 +351,3 @@ export function ChampionPicker() {
     </div>
   );
 }
-
-    

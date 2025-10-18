@@ -76,7 +76,6 @@ function ChromaDialogContent({ skin, champion, onGenerate, suggestedChromas, isL
               <div className="relative aspect-square w-full">
                 <Image src={chroma.imageUrl} alt={chroma.name} fill className="object-cover rounded-lg" unoptimized />
               </div>
-              <p className="text-sm font-medium">{chroma.name}</p>
             </div>
           ))}
         </div>

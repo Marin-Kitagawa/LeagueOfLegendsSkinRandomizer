@@ -144,19 +144,17 @@ export function SkinPicker() {
   useEffect(() => {
     const lowerCaseSearch = searchTerm.toLowerCase();
     
-    const filtered = champions.filter(champion => {
+    const newlyFiltered = champions.filter(champion => {
       const matchesSearch = champion.name.toLowerCase().includes(lowerCaseSearch);
       const matchesRole = selectedRoles.length === 0 || selectedRoles.some(role => champion.tags.includes(role));
       return matchesSearch && matchesRole;
     });
 
-    setFilteredChampions(filtered);
+    setFilteredChampions(newlyFiltered);
 
-    // If the currently selected champion is filtered out, deselect it
-    if (selectedChampionId && !filtered.some(c => c.id === selectedChampionId)) {
+    if (selectedChampionId && !newlyFiltered.some(c => c.id === selectedChampionId)) {
       setSelectedChampionId(undefined);
     }
-
   }, [searchTerm, selectedRoles, champions, selectedChampionId]);
 
   const selectedChampion = useMemo(() => champions.find(c => c.id === selectedChampionId), [selectedChampionId, champions]);
@@ -189,16 +187,19 @@ export function SkinPicker() {
   };
 
   useEffect(() => {
-    // Adjust skin count slider if the max changes
     if (skinCount[0] > maxSkins) {
       setSkinCount([maxSkins > 0 ? maxSkins : 1]);
     }
   }, [maxSkins, skinCount]);
   
   const handleRandomChampion = () => {
-    if (filteredChampions.length > 0) {
-      const randomIndex = Math.floor(Math.random() * filteredChampions.length);
-      const randomChampion = filteredChampions[randomIndex];
+    const championsToChooseFrom = champions.filter(champion => {
+        return selectedRoles.length === 0 || selectedRoles.some(role => champion.tags.includes(role));
+    });
+    
+    if (championsToChooseFrom.length > 0) {
+      const randomIndex = Math.floor(Math.random() * championsToChooseFrom.length);
+      const randomChampion = championsToChooseFrom[randomIndex];
       handleChampionChange(randomChampion.id);
     } else {
       toast({

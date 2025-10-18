@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   title: 'Skin Picker',
   description: 'Select a champion and get random skin suggestions for League of Legends.',
   icons: {
-    icon: "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/4655.png",
+    icon: "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/4644.png",
   },
 };
 

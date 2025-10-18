@@ -5,6 +5,6 @@ This app allows you to randomly choose a champion and randomly list $k\le n$ ski
 
 ## TODO
 
-- [ ] Random chroma picker
+- [x] Random chroma picker
 - [ ] Random emote picker
 - [ ] Random summoner icon picker

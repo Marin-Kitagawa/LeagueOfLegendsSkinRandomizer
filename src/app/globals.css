@@ -89,16 +89,18 @@ body {
 
   @keyframes petal-drift {
     0% {
-      transform: translateY(-20vh) rotate(0deg) translateX(0);
+      transform: translateY(-10vh) rotate(0deg);
       opacity: 1;
     }
     100% {
-      transform: translateY(120vh) rotate(720deg) translateX(calc(var(--sway) * 50px));
+      transform: translateY(110vh) rotate(720deg);
       opacity: 0;
     }
   }
   
   .animate-petal-drift {
-    animation: petal-drift linear infinite;
+    animation-name: petal-drift;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
   }
 }

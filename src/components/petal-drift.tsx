@@ -16,7 +16,6 @@ type PetalStyle = {
   left: string;
   animationDelay: string;
   animationDuration: string;
-  '--sway': number;
 };
 
 
@@ -34,7 +33,6 @@ export function PetalDrift({
       left: `${Math.random() * 100}vw`,
       animationDelay: `${Math.random() * 20}s`,
       animationDuration: `${10 + Math.random() * 10}s`,
-      '--sway': (Math.random() - 0.5) * 3,
     }));
     setPetals(generatedPetals);
   }, [quantity]);

@@ -193,18 +193,14 @@ export function SkinPicker() {
   }, [maxSkins, skinCount]);
   
   const handleRandomChampion = () => {
-    const championsToChooseFrom = champions.filter(champion => {
-        return selectedRoles.length === 0 || selectedRoles.some(role => champion.tags.includes(role));
-    });
-    
-    if (championsToChooseFrom.length > 0) {
-      const randomIndex = Math.floor(Math.random() * championsToChooseFrom.length);
-      const randomChampion = championsToChooseFrom[randomIndex];
+    if (filteredChampions.length > 0) {
+      const randomIndex = Math.floor(Math.random() * filteredChampions.length);
+      const randomChampion = filteredChampions[randomIndex];
       handleChampionChange(randomChampion.id);
     } else {
       toast({
         title: 'No Matching Champions',
-        description: 'No champions match your current role filters. Try clearing them.',
+        description: 'No champions match your current role or search filters. Try clearing them.',
         variant: 'destructive',
       });
     }

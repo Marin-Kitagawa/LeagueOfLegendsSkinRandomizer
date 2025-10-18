@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 
 function Petal() {
@@ -12,6 +12,14 @@ function Petal() {
   );
 }
 
+type PetalStyle = {
+  left: string;
+  animationDelay: string;
+  animationDuration: string;
+  '--sway': number;
+};
+
+
 export function PetalDrift({
   className,
   quantity = 30,
@@ -19,25 +27,17 @@ export function PetalDrift({
   className?: string;
   quantity?: number;
 }) {
-  const [isMounted, setIsMounted] = useState(false);
+  const [petals, setPetals] = useState<PetalStyle[]>([]);
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  
-  const petals = useMemo(() => {
-    if (!isMounted) return [];
-    return Array.from({ length: quantity }, () => ({
+    const generatedPetals = Array.from({ length: quantity }, () => ({
       left: `${Math.random() * 100}vw`,
       animationDelay: `${Math.random() * 20}s`,
       animationDuration: `${10 + Math.random() * 10}s`,
       '--sway': (Math.random() - 0.5) * 3,
     }));
-  }, [quantity, isMounted]);
-
-  if (!isMounted) {
-    return null;
-  }
+    setPetals(generatedPetals);
+  }, [quantity]);
 
   return (
     <div

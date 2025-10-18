@@ -168,7 +168,7 @@ export function SkinPicker() {
   }, [selectedChampion, selectedTiers]);
 
   const maxSkins = availableSkins.length > 0 ? availableSkins.length : 1;
-  const logoUrl = latestVersion ? `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/profileicon/4644.png` : '/logo.png';
+  const logoUrl = latestVersion ? `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/profileicon/4655.png` : '/logo.png';
 
   const handleChampionChange = (championId: string, saveToStorage = true) => {
     setSelectedChampionId(championId);
@@ -290,7 +290,7 @@ export function SkinPicker() {
         <CardHeader className="text-center items-center">
         <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 border border-primary/20 shadow-inner shadow-primary/10 overflow-hidden">
              {latestVersion ? (
-                <Image src={logoUrl} alt="Spirit Bonds Kindred Summoner Icon" width={80} height={80} unoptimized/>
+                <Image src={logoUrl} alt="Spirit Blossom Ahri Summoner Icon" width={80} height={80} unoptimized/>
               ) : (
                 <Skeleton className="h-20 w-20 rounded-full" />
               )}
@@ -528,5 +528,3 @@ export function SkinPicker() {
     </div>
   );
 }
-
-    

@@ -26,6 +26,7 @@ export type Champion = {
   name: string;
   skins: Skin[];
   title: string;
+  tags: string[];
 };
 
 type ChampionFullData = {
@@ -44,6 +45,7 @@ type ChampionFullData = {
                 name: string;
                 chromas: boolean;
             }[];
+            tags: string[];
         }
     };
 }
@@ -133,6 +135,7 @@ export const getChampions = async (): Promise<Champion[]> => {
         key: champ.key,
         name: champ.name,
         title: champ.title,
+        tags: champ.tags,
         skins: champ.skins.map(skin => {
             const tierData = skinTiers[skin.id];
             const tier = tierData ? getSkinTier(tierData.rarity, tierData.isLegacy) : null;

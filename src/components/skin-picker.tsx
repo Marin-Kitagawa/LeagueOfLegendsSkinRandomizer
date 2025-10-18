@@ -2,12 +2,13 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
-import { Loader2, Search, Sparkles, Dice5, Image as ImageIcon, Palette } from 'lucide-react';
-import { getChampions, getChampionChromas, type Champion, type Skin, type Chroma, getSkinImageUrl, getLatestVersion } from '@/lib/champions';
+import { Loader2, Search, Sparkles, Dice5, Image as ImageIcon, Palette, Filter } from 'lucide-react';
+import { getChampions, getChampionChromas, type Champion, type Skin, type Chroma, getSkinImageUrl, getLatestVersion, type SkinTier } from '@/lib/champions';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -19,6 +20,10 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/t
 
 type SuggestedSkin = Skin & { imageUrl: string; championId: string };
 type SuggestedChroma = Chroma & { imageUrl: string };
+
+const CHAMPION_ROLES = ["Assassin", "Fighter", "Mage", "Marksman", "Support", "Tank"];
+const SKIN_TIERS = ["Epic", "Legendary", "Mythic", "Ultimate"];
+
 
 function ChromaDialogContent({ skin, champion, onGenerate, suggestedChromas, isLoading, count, setCount, maxChromas }: {
   skin: SuggestedSkin,
@@ -96,6 +101,9 @@ export function SkinPicker() {
   const [isFetchingChampions, setIsFetchingChampions] = useState(true);
   const [latestVersion, setLatestVersion] = useState<string | null>(null);
 
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [selectedTiers, setSelectedTiers] = useState<string[]>([]);
+
   // States for Chroma Dialog
   const [chromaSkin, setChromaSkin] = useState<SuggestedSkin | null>(null);
   const [chromaCount, setChromaCount] = useState([1]);
@@ -135,14 +143,31 @@ export function SkinPicker() {
 
   useEffect(() => {
     const lowerCaseSearch = searchTerm.toLowerCase();
-    const filtered = champions.filter(champion =>
-      champion.name.toLowerCase().includes(lowerCaseSearch)
-    );
+    
+    const filtered = champions.filter(champion => {
+      const matchesSearch = champion.name.toLowerCase().includes(lowerCaseSearch);
+      const matchesRole = selectedRoles.length === 0 || selectedRoles.some(role => champion.tags.includes(role));
+      return matchesSearch && matchesRole;
+    });
+
     setFilteredChampions(filtered);
-  }, [searchTerm, champions]);
+
+    // If the currently selected champion is filtered out, deselect it
+    if (selectedChampionId && !filtered.some(c => c.id === selectedChampionId)) {
+      setSelectedChampionId(undefined);
+    }
+
+  }, [searchTerm, selectedRoles, champions, selectedChampionId]);
 
   const selectedChampion = useMemo(() => champions.find(c => c.id === selectedChampionId), [selectedChampionId, champions]);
-  const maxSkins = selectedChampion ? selectedChampion.skins.length : 1;
+  
+  const availableSkins = useMemo(() => {
+    if (!selectedChampion) return [];
+    if (selectedTiers.length === 0) return selectedChampion.skins;
+    return selectedChampion.skins.filter(skin => skin.tier && selectedTiers.includes(skin.tier.name));
+  }, [selectedChampion, selectedTiers]);
+
+  const maxSkins = availableSkins.length > 0 ? availableSkins.length : 1;
   const logoUrl = latestVersion ? `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/profileicon/4655.png` : '/logo.png';
 
   const handleChampionChange = (championId: string, saveToStorage = true) => {
@@ -152,19 +177,35 @@ export function SkinPicker() {
     }
     const champ = champions.find(c => c.id === championId);
     if (champ) {
-        const newSkinCount = Math.min(skinCount[0], champ.skins.length);
-        setSkinCount([newSkinCount]);
+      const skinsForTiers = selectedTiers.length > 0
+        ? champ.skins.filter(s => s.tier && selectedTiers.includes(s.tier.name))
+        : champ.skins;
+      const newSkinCount = Math.min(skinCount[0], skinsForTiers.length > 0 ? skinsForTiers.length : 1);
+      setSkinCount([newSkinCount > 0 ? newSkinCount : 1]);
     } else {
-        setSkinCount([1]);
+      setSkinCount([1]);
     }
     setSuggestedSkins([]);
   };
+
+  useEffect(() => {
+    // Adjust skin count slider if the max changes
+    if (skinCount[0] > maxSkins) {
+      setSkinCount([maxSkins > 0 ? maxSkins : 1]);
+    }
+  }, [maxSkins, skinCount]);
   
   const handleRandomChampion = () => {
-    if (champions.length > 0) {
-      const randomIndex = Math.floor(Math.random() * champions.length);
-      const randomChampion = champions[randomIndex];
+    if (filteredChampions.length > 0) {
+      const randomIndex = Math.floor(Math.random() * filteredChampions.length);
+      const randomChampion = filteredChampions[randomIndex];
       handleChampionChange(randomChampion.id);
+    } else {
+      toast({
+        title: 'No Matching Champions',
+        description: 'No champions match your current role filters. Try clearing them.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -173,12 +214,16 @@ export function SkinPicker() {
       toast({ title: 'No Champion Selected', description: 'Please select a champion first.', variant: 'destructive' });
       return;
     }
+    if (availableSkins.length === 0) {
+      toast({ title: 'No Matching Skins', description: 'No skins match your selected tier filters for this champion.', variant: 'destructive' });
+      return;
+    }
 
     setIsLoading(true);
     setSuggestedSkins([]);
 
     setTimeout(() => {
-      const shuffledSkins = [...selectedChampion.skins].sort(() => 0.5 - Math.random());
+      const shuffledSkins = [...availableSkins].sort(() => 0.5 - Math.random());
       const skinsToSuggest = shuffledSkins.slice(0, skinCount[0]);
 
       const skinsWithImages = skinsToSuggest.map(skin => ({
@@ -277,14 +322,50 @@ export function SkinPicker() {
                     </div>
                   </div>
                   <ScrollArea className="h-[300px]">
-                    {filteredChampions.map((champion) => (
+                    {filteredChampions.length > 0 ? filteredChampions.map((champion) => (
                       <SelectItem key={champion.id} value={champion.id} className="text-base font-dropdown">
                         {champion.name}
                       </SelectItem>
-                    ))}
+                    )) : (
+                      <div className="text-center text-sm text-muted-foreground p-4">No champions match your filters.</div>
+                    )}
                   </ScrollArea>
                 </SelectContent>
               </Select>
+              <DropdownMenu>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="icon" aria-label="Filter Champions by Role">
+                          <Filter className="h-5 w-5" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Filter by Role</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <DropdownMenuContent>
+                    <DropdownMenuLabel>Champion Roles</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {CHAMPION_ROLES.map(role => (
+                        <DropdownMenuCheckboxItem
+                            key={role}
+                            checked={selectedRoles.includes(role)}
+                            onCheckedChange={() => {
+                                setSelectedRoles(prev => 
+                                    prev.includes(role) ? prev.filter(r => r !== role) : [...prev, role]
+                                )
+                            }}
+                        >
+                            {role}
+                        </DropdownMenuCheckboxItem>
+                    ))}
+                 </DropdownMenuContent>
+              </DropdownMenu>
+
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -301,20 +382,59 @@ export function SkinPicker() {
             )}
           </div>
           <div className="space-y-4 pt-2">
-            <div className="flex justify-between items-center">
-                <Label htmlFor="skin-count-slider" className="text-base font-headline">Number of Skins</Label>
-                <span className="font-semibold text-lg text-primary rounded-md bg-primary/10 px-3 py-1">{skinCount[0]}</span>
+             <div className="flex justify-between items-center gap-4">
+                <div className='flex-grow space-y-2'>
+                    <div className="flex justify-between items-center">
+                        <Label htmlFor="skin-count-slider" className="text-base font-headline">Number of Skins</Label>
+                        <span className="font-semibold text-lg text-primary rounded-md bg-primary/10 px-3 py-1">{skinCount[0]}</span>
+                    </div>
+                    <Slider
+                      id="skin-count-slider"
+                      min={1}
+                      max={maxSkins}
+                      step={1}
+                      value={skinCount}
+                      onValueChange={setSkinCount}
+                      disabled={!selectedChampion || isFetchingChampions || availableSkins.length === 0}
+                      aria-label="Number of skins slider"
+                    />
+                </div>
+                <div className="flex-shrink-0">
+                    <DropdownMenu>
+                         <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="outline" size="icon" aria-label="Filter Skins by Tier">
+                                            <Filter className="h-5 w-5" />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Filter by Tier</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                        <DropdownMenuContent>
+                            <DropdownMenuLabel>Skin Tiers</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {SKIN_TIERS.map(tier => (
+                                <DropdownMenuCheckboxItem
+                                    key={tier}
+                                    checked={selectedTiers.includes(tier)}
+                                    onCheckedChange={() => {
+                                        setSelectedTiers(prev => 
+                                            prev.includes(tier) ? prev.filter(t => t !== tier) : [...prev, tier]
+                                        )
+                                    }}
+                                >
+                                    {tier}
+                                </DropdownMenuCheckboxItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
-            <Slider
-              id="skin-count-slider"
-              min={1}
-              max={maxSkins}
-              step={1}
-              value={skinCount}
-              onValueChange={setSkinCount}
-              disabled={!selectedChampion || isFetchingChampions}
-              aria-label="Number of skins slider"
-            />
           </div>
         </CardContent>
         <CardFooter>

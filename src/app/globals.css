@@ -106,4 +106,8 @@ body {
     animation-timing-function: linear;
     animation-iteration-count: infinite;
   }
+
+  .font-dropdown {
+    font-family: 'Helvetica', sans-serif;
+  }
 }

@@ -261,7 +261,7 @@ export function SkinPicker() {
             ) : (
             <div className="flex items-center gap-2">
               <Select onValueChange={(value) => handleChampionChange(value)} value={selectedChampionId}>
-                <SelectTrigger id="champion-select" className="w-full text-base">
+                <SelectTrigger id="champion-select" className="w-full text-base font-dropdown">
                   <SelectValue placeholder="Select a champion..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -278,7 +278,7 @@ export function SkinPicker() {
                   </div>
                   <ScrollArea className="h-[300px]">
                     {filteredChampions.map((champion) => (
-                      <SelectItem key={champion.id} value={champion.id} className="text-base font-body">
+                      <SelectItem key={champion.id} value={champion.id} className="text-base font-dropdown">
                         {champion.name}
                       </SelectItem>
                     ))}

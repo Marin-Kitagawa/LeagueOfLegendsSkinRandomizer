@@ -320,6 +320,9 @@ export function ChampionPicker() {
                     </div>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-5xl p-0 border-0">
+                    <DialogHeader className="sr-only">
+                        <DialogTitle>{champion.name} Splash Art</DialogTitle>
+                    </DialogHeader>
                     <div className="relative aspect-video w-full">
                         <Image src={getSkinImageUrl(champion.id, 0, 'splash')} alt={`${champion.name} Splash Art`} fill className="object-cover rounded-lg" />
                     </div>

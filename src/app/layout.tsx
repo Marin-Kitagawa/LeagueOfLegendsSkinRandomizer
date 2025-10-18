@@ -1,3 +1,4 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
@@ -9,8 +10,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Skin Picker',
-  description: 'Select a champion and get random skin suggestions for League of Legends.',
+  title: 'League Tools',
+  description: 'Random champion and skin suggestion tools for League of Legends.',
   icons: {
     icon: "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/profileicon/4644.png",
   },

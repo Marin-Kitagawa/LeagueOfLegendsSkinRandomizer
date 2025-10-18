@@ -3,8 +3,8 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
-import { Loader2, Search, Sparkles, Dice5, Image as ImageIcon, Palette, SlidersHorizontal } from 'lucide-react';
-import { getChampions, getChampionChromas, type Champion, type Skin, type Chroma, getSkinImageUrl, getLatestVersion, type SkinTier } from '@/lib/champions';
+import { Loader2, Search, Sparkles, Dice5, Image as ImageIcon, Palette, SlidersHorizontal, ArrowLeft } from 'lucide-react';
+import { getChampions, getChampionChromas, type Champion, type Skin, type Chroma, getSkinImageUrl, getLatestVersion } from '@/lib/champions';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,6 +18,7 @@ import { Slider } from '@/components/ui/slider';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from './ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import Link from 'next/link';
 
 type SuggestedSkin = Skin & { imageUrl: string; championId: string };
 type SuggestedChroma = Chroma & { imageUrl: string };
@@ -90,7 +91,7 @@ function ChromaDialogContent({ skin, champion, onGenerate, suggestedChromas, isL
   )
 }
 
-export function SkinPicker() {
+export function LeagueSkinPicker() {
   const { toast } = useToast();
   const [champions, setChampions] = useState<Champion[]>([]);
   const [filteredChampions, setFilteredChampions] = useState<Champion[]>([]);
@@ -435,11 +436,17 @@ export function SkinPicker() {
             </div>
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="flex-col gap-4">
           <Button onClick={handleSuggestSkins} size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-lg font-headline tracking-wider shadow-lg shadow-primary/20 transition-all hover:shadow-xl hover:shadow-primary/30" disabled={isLoading || !selectedChampion || isFetchingChampions}>
             {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Sparkles className="mr-2 h-5 w-5" />}
             Get Random Skins
           </Button>
+           <Link href="/champion-picker" passHref>
+              <Button variant="link" className="font-headline text-primary">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Go to Champion Picker
+              </Button>
+            </Link>
         </CardFooter>
       </Card>
 

@@ -170,7 +170,7 @@ export const getChampionChromas = async (championKey: string): Promise<Chroma[]>
                     if (chroma.id.toString() !== skin.id.toString()) {
                         allChromas.push({
                             id: chroma.id.toString(),
-                            name: chroma.name,
+                            name: chroma.name.includes(skin.name) ? chroma.name : `${skin.name} ${chroma.name}`,
                             chromaPath: `https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/${chroma.chromaPath.toLowerCase().replace('/lol-game-data/assets/', '')}`,
                             skinId: skin.id.toString()
                         });

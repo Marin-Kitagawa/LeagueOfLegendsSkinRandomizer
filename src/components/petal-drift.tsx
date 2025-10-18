@@ -30,7 +30,8 @@ export function PetalDrift({
     for (let i = 0; i < quantity; i++) {
       const sway = (Math.random() - 0.5) * 2; // -1 to 1 for side-to-side motion
       petalArray.push({
-        left: `${Math.random() * 100}%`,
+        top: `${-10 + Math.random() * 110}vh`, // Start anywhere from -10vh to 100vh
+        left: `${Math.random() * 100}vw`,
         animationDelay: `${Math.random() * 20}s`,
         animationDuration: `${Math.random() * 10 + 10}s`, // 10s to 20s duration
         '--sway': sway,
@@ -55,6 +56,7 @@ export function PetalDrift({
           key={index}
           className="absolute animate-petal-drift"
           style={{
+            top: petal.top,
             left: petal.left,
             animationDelay: petal.animationDelay,
             animationDuration: petal.animationDuration,

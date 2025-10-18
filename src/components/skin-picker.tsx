@@ -345,11 +345,11 @@ export function SkinPicker() {
               <div className="relative aspect-[9/16] w-full">
                 <Image src={skin.imageUrl} alt={skin.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
               </div>
-              <CardHeader className="flex-grow pt-8">
+              <CardHeader className="flex-grow pt-4">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <CardTitle className="text-2xl truncate font-headline">{skin.name}</CardTitle>
+                      <CardTitle className="text-2xl font-headline py-2">{skin.name}</CardTitle>
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>{skin.name}</p>

@@ -9,6 +9,13 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'AurellisaScript';
+  src: url('/AurellisaScript.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   font-family: 'Inter', sans-serif;
 }
@@ -108,6 +115,6 @@ body {
   }
 
   .font-dropdown {
-    font-family: 'Alex Brush', cursive;
+    font-family: 'AurellisaScript', cursive;
   }
 }

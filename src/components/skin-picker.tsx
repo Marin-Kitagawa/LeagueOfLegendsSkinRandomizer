@@ -345,7 +345,7 @@ export function SkinPicker() {
               <div className="relative aspect-[9/16] w-full">
                 <Image src={skin.imageUrl} alt={skin.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
               </div>
-              <CardHeader className="flex-grow">
+              <CardHeader className="flex-grow pt-8">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>

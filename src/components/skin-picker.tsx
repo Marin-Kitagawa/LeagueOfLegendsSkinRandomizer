@@ -373,6 +373,9 @@ export function SkinPicker() {
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-5xl p-0 border-0">
+                    <DialogHeader className="sr-only">
+                      <DialogTitle>{skin.name} Splash Art</DialogTitle>
+                    </DialogHeader>
                     <div className="relative aspect-video w-full">
                       <Image src={getSkinImageUrl(skin.championId, skin.num, 'splash')} alt={skin.name} fill className="object-cover rounded-lg" />
                     </div>

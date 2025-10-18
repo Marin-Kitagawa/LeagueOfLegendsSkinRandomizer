@@ -86,4 +86,23 @@ body {
       background-position: 0% 50%;
     }
   }
+
+  @keyframes spirit-float {
+    0% {
+      transform: translateY(0) translateX(0) scale(1);
+      opacity: 0.3;
+    }
+    50% {
+      transform: translateY(-80px) translateX(20px) scale(1.2);
+      opacity: 0.8;
+    }
+    100% {
+      transform: translateY(-150px) translateX(-20px) scale(1);
+      opacity: 0;
+    }
+  }
+  
+  .animate-spirit-float {
+    animation: spirit-float infinite ease-in-out;
+  }
 }

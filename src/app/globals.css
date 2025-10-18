@@ -89,12 +89,15 @@ body {
 
   @keyframes petal-drift {
     0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 1;
+      transform: translateY(-10vh) translateX(0) rotate(0deg);
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(60vh) translateX(10vw) rotate(360deg);
     }
     100% {
-        transform: translateY(120vh) rotate(720deg);
-        opacity: 0;
+      transform: translateY(110vh) translateX(-10vw) rotate(720deg);
+      opacity: 0;
     }
   }
   

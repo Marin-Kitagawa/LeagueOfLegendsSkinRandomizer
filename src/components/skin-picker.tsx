@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
-import { Loader2, Search, Sparkles, Dice5, Image as ImageIcon, Palette, Filter } from 'lucide-react';
+import { Loader2, Search, Sparkles, Dice5, Image as ImageIcon, Palette, SlidersHorizontal } from 'lucide-react';
 import { getChampions, getChampionChromas, type Champion, type Skin, type Chroma, getSkinImageUrl, getLatestVersion, type SkinTier } from '@/lib/champions';
 
 import { Button } from '@/components/ui/button';
@@ -168,7 +168,7 @@ export function SkinPicker() {
   }, [selectedChampion, selectedTiers]);
 
   const maxSkins = availableSkins.length > 0 ? availableSkins.length : 1;
-  const logoUrl = latestVersion ? `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/profileicon/4655.png` : '/logo.png';
+  const logoUrl = latestVersion ? `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/img/profileicon/4644.png` : '/logo.png';
 
   const handleChampionChange = (championId: string, saveToStorage = true) => {
     setSelectedChampionId(championId);
@@ -290,7 +290,7 @@ export function SkinPicker() {
         <CardHeader className="text-center items-center">
         <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 border border-primary/20 shadow-inner shadow-primary/10 overflow-hidden">
              {latestVersion ? (
-                <Image src={logoUrl} alt="Spirit Bonds Ahri Summoner Icon" width={80} height={80} unoptimized/>
+                <Image src={logoUrl} alt="Spirit Bonds Kindred Summoner Icon" width={80} height={80} unoptimized/>
               ) : (
                 <Skeleton className="h-20 w-20 rounded-full" />
               )}
@@ -338,7 +338,7 @@ export function SkinPicker() {
                     <TooltipTrigger asChild>
                       <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="icon" aria-label="Filter Champions by Role">
-                          <Filter className="h-5 w-5" />
+                          <SlidersHorizontal className="h-5 w-5" />
                         </Button>
                       </DropdownMenuTrigger>
                     </TooltipTrigger>
@@ -406,7 +406,7 @@ export function SkinPicker() {
                                 <TooltipTrigger asChild>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="outline" size="icon" aria-label="Filter Skins by Tier">
-                                            <Filter className="h-5 w-5" />
+                                            <SlidersHorizontal className="h-5 w-5" />
                                         </Button>
                                     </DropdownMenuTrigger>
                                 </TooltipTrigger>
@@ -528,3 +528,5 @@ export function SkinPicker() {
     </div>
   );
 }
+
+    

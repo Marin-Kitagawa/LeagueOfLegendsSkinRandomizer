@@ -278,7 +278,7 @@ export function SkinPicker() {
                   </div>
                   <ScrollArea className="h-[300px]">
                     {filteredChampions.map((champion) => (
-                      <SelectItem key={champion.id} value={champion.id} className="text-base">
+                      <SelectItem key={champion.id} value={champion.id} className="text-base font-body">
                         {champion.name}
                       </SelectItem>
                     ))}

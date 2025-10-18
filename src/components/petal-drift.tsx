@@ -22,19 +22,18 @@ export function PetalDrift({
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsMounted(true), 100);
-    return () => clearTimeout(timer);
+    setIsMounted(true);
   }, []);
   
   const petals = useMemo(() => {
-    if (typeof window === 'undefined') return [];
+    if (!isMounted) return [];
     return Array.from({ length: quantity }, () => ({
       left: `${Math.random() * 100}vw`,
       animationDelay: `${Math.random() * 20}s`,
       animationDuration: `${10 + Math.random() * 10}s`,
       '--sway': (Math.random() - 0.5) * 3,
     }));
-  }, [quantity]);
+  }, [quantity, isMounted]);
 
   if (!isMounted) {
     return null;

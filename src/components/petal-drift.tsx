@@ -27,15 +27,26 @@ export function PetalDrift({
   quantity?: number;
 }) {
   const [petals, setPetals] = useState<PetalStyle[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const generatedPetals = Array.from({ length: quantity }, () => ({
-      left: `${Math.random() * 100}vw`,
-      animationDelay: `${Math.random() * 20}s`,
-      animationDuration: `${10 + Math.random() * 10}s`,
-    }));
-    setPetals(generatedPetals);
-  }, [quantity]);
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted) {
+      const generatedPetals = Array.from({ length: quantity }, () => ({
+        left: `${Math.random() * 100}vw`,
+        animationDelay: `${Math.random() * 20}s`,
+        animationDuration: `${10 + Math.random() * 10}s`,
+      }));
+      setPetals(generatedPetals);
+    }
+  }, [quantity, isMounted]);
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div
@@ -47,7 +58,7 @@ export function PetalDrift({
       {petals.map((style, i) => (
         <div
           key={i}
-          className="absolute animate-petal-drift"
+          className="absolute top-0 animate-petal-drift"
           style={style as React.CSSProperties}
         >
           <Petal />

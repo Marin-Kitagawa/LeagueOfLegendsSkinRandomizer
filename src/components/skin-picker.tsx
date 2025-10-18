@@ -72,7 +72,7 @@ function ChromaDialogContent({ skin, champion, onGenerate, suggestedChromas, isL
       {suggestedChromas.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pt-4">
           {suggestedChromas.map(chroma => (
-            <div key={chroma.id} className="space-y-2 text-center">
+            <div key={chroma.id} className="space-y-2 text-center animate-fade-in-up">
               <div className="relative aspect-square w-full">
                 <Image src={chroma.imageUrl} alt={chroma.name} fill className="object-cover rounded-lg" unoptimized />
               </div>
@@ -341,7 +341,7 @@ export function SkinPicker() {
       {suggestedSkins.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 animate-fade-in">
           {suggestedSkins.map((skin) => (
-            <Card key={skin.id} className="overflow-hidden border-primary/20 bg-card/80 backdrop-blur-sm shadow-lg flex flex-col">
+            <Card key={skin.id} className="overflow-hidden border-primary/20 bg-card/80 backdrop-blur-sm shadow-lg flex flex-col animate-fade-in-up">
               <div className="relative aspect-[9/16] w-full">
                 <Image src={skin.imageUrl} alt={skin.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
               </div>
@@ -374,7 +374,7 @@ export function SkinPicker() {
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-5xl p-0 border-0">
                     <div className="relative aspect-video w-full">
-                      <Image src={getSkinImageUrl(skin.championId, skin.num, 'splash')} alt={skin.name} fill className="object-contain rounded-lg" />
+                      <Image src={getSkinImageUrl(skin.championId, skin.num, 'splash')} alt={skin.name} fill className="object-cover rounded-lg" />
                     </div>
                   </DialogContent>
                 </Dialog>

@@ -23,6 +23,7 @@ import { ArrowRight } from 'lucide-react';
 type SuggestedChroma = Chroma & { imageUrl: string };
 
 const CHAMPION_ROLES = ["Assassin", "Fighter", "Mage", "Marksman", "Support", "Tank"];
+const DDRAGON_URL = 'https://ddragon.leagueoflegends.com';
 
 const ROLE_COLORS: { [key: string]: string } = {
   Assassin: 'bg-red-500/80 hover:bg-red-500',
@@ -347,3 +348,5 @@ export function ChampionPicker() {
     </div>
   );
 }
+
+    
